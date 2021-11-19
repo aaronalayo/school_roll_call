@@ -1,0 +1,37 @@
+{
+  "name": "rollcall",
+  "version": "1.0.0",
+  "description": "Web API to check students attendance",
+  "main": "app.js",
+  "scripts": {
+    "migrate:latest": "knex migrate:latest",
+    "migrate:make": "knex migrate:make",
+    "migrate:rollback": "knex migrate:rollback",
+    "seed:make": "knex seed:make",
+    "seed:run": "knex seed:run",
+    "cleandb": "knex migrate:rollback && knex migrate:latest && knex seed:run",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronalayo/kea_roll_call.git"
+  },
+  "author": "Aaron Alayo, Rafael Barbieru, Popular Belbase, Anton Kamenov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aaronalayo/kea_roll_call/issues"
+  },
+  "homepage": "https://github.com/aaronalayo/kea_roll_call#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "knex": "^0.95.14",
+    "objection": "^3.0.0",
+    "pg": "^8.7.1"
+  }
+}
