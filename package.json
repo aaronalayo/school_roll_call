@@ -9,7 +9,7 @@
     "migrate:rollback": "knex migrate:rollback",
     "seed:make": "knex seed:make",
     "seed:run": "knex seed:run",
-    "cleandb": "knex migrate:rollback && knex migrate:latest && knex seed:run",
+    "cleandb": "knex migrate:rollback && knex migrate:latest",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
