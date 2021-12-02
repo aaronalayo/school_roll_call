@@ -8,10 +8,9 @@ jobs:
   syntax-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: stefanoeb/eslint-action@1.0.2
-        with:
-          files: app/
+    - name: Action ESLint
+      uses: sibiraj-s/action-eslint@v2.0.0
+
 
   build:
     runs-on: ubuntu-latest
