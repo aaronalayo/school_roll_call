@@ -1,5 +1,7 @@
 import express from 'express';
 import http from  'http';
+import ip from 'ip';
+import publicIp from 'public-ip'
 const app = express();
 const server = http.createServer(app);
 
@@ -11,16 +13,34 @@ import Knex from "knex";
 import connection from "./knexfile.js"
 const knex = Knex(connection.development);
 knex.on("query", function (queryData) {
-  console.log( queryData );
+  // console.log( queryData );
 });
-knex.on('query', console.log);
+// knex.on('query', console.log);
 
 Model.knex(knex);
 
+// import School from "./model/School.js";
 
+// async function getPublicIp(){
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+//     console.log(await publicIp.v4());
+//     //=> '46.5.21.123'
+  
+//     console.log(await publicIp.v6());
+//     //=> 'fe80::200:f8ff:fe21:67cf'
+  
+// }
+
+app.get('/', async (req, res) => {
+//   const myIp = ip.address('public', "ipv4")
+//   const school = await School.query().select().where({school_ip : "94.18.243.162"});
+//  getPublicIp().then((data)=>{
+//   //  console.log(data)
+//     const school = School.query().select().where({school_ip : data});
+//     const result = ip.isEqual(data, school[0].school_ip)
+//     console.log(result)
+ 
+  res.send("Hello")
 });
 
 const port = process.env.PORT ? process.env.PORT : 8080;

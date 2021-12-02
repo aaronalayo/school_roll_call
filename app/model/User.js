@@ -10,9 +10,9 @@ class User extends Model {
       return {
         persons: {
           relation: Model.HasOneRelation,
-          modelClass: __dirname + "/Person.js",
+          modelClass: __dirname + "/People.js",
           join: {
-            from: "persons.person_uuid",
+            from: "people.person_uuid",
             to: "users.user_uuid",
           },
         },

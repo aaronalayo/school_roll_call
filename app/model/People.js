@@ -3,7 +3,7 @@ const { Model } = objection;
 
 class Person extends Model {
   static get tableName() {
-    return "persons";
+    return "people";
   }
   static get relationMappings() {
     return {
@@ -12,14 +12,14 @@ class Person extends Model {
         modelClass: __dirname + "/Departement.js",
         join: {
           from: "departments.department_uuid",
-          to: "persons.person_uuid",
+          to: "people.person_uuid",
         },
       },
     }
   };
-
+  
   static get idColumn() {
-    return "persons.person_uuid";
+    return "people.person_uuid";
   }
 }
 

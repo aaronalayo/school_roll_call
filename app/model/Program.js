@@ -9,7 +9,7 @@ class Program extends Model {
   static get relationMappings() {
     return {
       departments: {
-        relation: Model.HasOneRelation,
+        relation: Model.HasManyRelation,
         modelClass: __dirname + "/Department.js",
         join: {
           from: "departments.department_uuid",

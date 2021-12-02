@@ -21,7 +21,7 @@ export default {
   pool: {
     afterCreate: function (conn, done) {
       // in this example we use pg driver's connection API
-      conn.query('SET timezone="UTC+2";', function (err) {
+      conn.query('SET timezone="UTC+1";', function (err) {
         if (err) {
           // first query failed, return error and don't try to make next query
           done(err, conn);
