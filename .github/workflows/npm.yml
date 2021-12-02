@@ -8,9 +8,8 @@ jobs:
   syntax-check:
     runs-on: ubuntu-latest
     steps:
-    - name: Action ESLint
-      uses: sibiraj-s/action-eslint@v2.0.0
-
+    - name: Run eslint with reviewdog
+      uses: reviewdog/action-eslint@v1.14.0
 
   build:
     runs-on: ubuntu-latest
