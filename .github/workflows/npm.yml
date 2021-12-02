@@ -7,7 +7,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./app
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
@@ -20,6 +22,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - run: ./app/npm ci
-    - run: ./app/npm run build --if-present
-    - run: ./app/npm test
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
