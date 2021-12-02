@@ -7,8 +7,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-        working-directory: ./app
 
     strategy:
       matrix:
@@ -22,6 +20,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    - run: app/npm ci
+    - run: app/npm run build --if-present
+    - run: app/npm test
