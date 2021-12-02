@@ -5,11 +5,34 @@ on: [push, pull_request]
 
 jobs:
 
-  syntax-check:
+  lint:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Run eslint with reviewdog
-      uses: reviewdog/action-eslint@v1.14.0
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 
+
+      - name: npm login
+        run:
+          npm config set //registry.npmjs.org/:_authToken=$NPM_READONLY_AUTH_TOKEN
+        env:
+          NPM_READONLY_AUTH_TOKEN: ${{ secrets.NPM_READONLY_AUTH_TOKEN }}
+
+      - name: npm install
+        working-directory: ./app
+        run: npm i --ignore-scripts
+
+      - name: Run ESLint
+        uses: ninosaurus/eslint-check@v5
+        with:
+          custom-directory: "./app"
+          repo-token: ${{secrets.GITHUB_TOKEN}}
 
   build:
     runs-on: ubuntu-latest
