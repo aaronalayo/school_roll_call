@@ -11,7 +11,10 @@
     "seed:run": "knex seed:run",
     "cleandb": "knex migrate:rollback && knex migrate:latest",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "test": "jest",
+    "lint": "eslint './**' ",
+    "fix-syntax": "npx eslint './**' --fix"
   },
   "type": "module",
   "repository": {
@@ -25,6 +28,12 @@
   },
   "homepage": "https://github.com/aaronalayo/kea_roll_call#readme",
   "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
     "nodemon": "^2.0.14"
   },
   "dependencies": {
@@ -32,6 +41,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "ip": "^1.1.5",
+    "jest": "^27.4.3",
     "knex": "^0.95.14",
     "objection": "^3.0.0",
     "pg": "^8.7.1",

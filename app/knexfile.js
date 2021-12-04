@@ -1,43 +1,39 @@
-'--unhandled-rejections=strict'
+'--unhandled-rejections=strict';
 
 import dotenv from 'dotenv';
-import objection from "objection";
+import objection from 'objection';
 const { knexSnakeCaseMappers } = objection;
 dotenv.config();
-//Database connection
+// Database connection
 
 export default {
-  development: {
-    client: "pg",
+	development: {
+		client: 'pg',
 
-    connection: {
-      connectionString: process.env.DATABASE_URL,
-      timezone: '+01:00',
-      ssl: {
-        rejectUnauthorized: false
-      },
-    },
-    pool: {
-      min: 2,
-      max: 10,
-      afterCreate: function (conn, done) {
-        // in this example we use pg driver's connection API
-        conn.query('SET timezone="Europe/Copenhagen";', function (err) {
-          if (err) {
-            // first query failed, return error and don't try to make next query
-            done(err, conn);
-          } else {
-            // do the second query...
-            // conn.query('SELECT set_limit(0.01);', function (err) {
-              // if err is not falsy, connection is discarded from pool
-              // if connection aquire was triggered by a query the error is passed to query promise
-              done(err, conn);
-            // });
-          }
-        });
-      }
-    },
-    ...knexSnakeCaseMappers()
-  },
+		connection: {
+			connectionString: process.env.DATABASE_URL,
+			ssl: {
+				rejectUnauthorized: false
+			}
+		}
+	},
+	pool: {
+		afterCreate: function (conn, done) {
+			// in this example we use pg driver's connection API
+			conn.query('SET timezone="UTC+1";', function (err) {
+				if (err) {
+					// first query failed, return error and don't try to make next query
+					done(err, conn);
+				} else {
+					// do the second query...
+					conn.query('SELECT set_limit(0.01);', function (err) {
+						// if err is not falsy, connection is discarded from pool
+						// if connection aquire was triggered by a query the error is passed to query promise
+						done(err, conn);
+					});
+				}
+			});
+		}
+	},
+	'': knexSnakeCaseMappers()
 };
-
