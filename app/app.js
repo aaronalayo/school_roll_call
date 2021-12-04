@@ -7,19 +7,20 @@ const server = http.createServer(app);
 
 // Setup Objection + Knex
 
-import objection from "objection";
+import objection from 'objection';
 const { Model } = objection;
-import Knex from "knex";
-import connection from "./knexfile.js"
+import Knex from 'knex';
+import connection from './knexfile.js'
 const knex = Knex(connection.development);
-knex.on("query", function (queryData) {
+knex.on('query', function (queryData) {
   // console.log( queryData );
 });
 // knex.on('query', console.log);
 
+
 Model.knex(knex);
 
-// import School from "./model/School.js";
+// import School from './model/School.js';
 
 // async function getPublicIp(){
 
@@ -32,22 +33,22 @@ Model.knex(knex);
 // }
 
 app.get('/', async (req, res) => {
-//   const myIp = ip.address('public', "ipv4")
-//   const school = await School.query().select().where({school_ip : "94.18.243.162"});
+//   const myIp = ip.address('public', 'ipv4')
+//   const school = await School.query().select().where({school_ip : '94.18.243.162'});
 //  getPublicIp().then((data)=>{
 //   //  console.log(data)
 //     const school = School.query().select().where({school_ip : data});
 //     const result = ip.isEqual(data, school[0].school_ip)
 //     console.log(result)
  
-  res.send("Hello")
+  res.send('Hello')
 });
 
 const port = process.env.PORT ? process.env.PORT : 8080;
-const port2 = "0.0.0.0";
+const port2 = '0.0.0.0';
 server.listen(port, port2, (error) => {
   if (error) {
-    console.log("error running the server");
+    console.log('error running the server');
   }
-  console.log("App listening on port: ", server.address().port);
+  console.log('App listening on port: ', server.address().port);
 });

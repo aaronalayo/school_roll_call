@@ -13,7 +13,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "test": "jest",
-    "lint": "eslint"
+    "lint": "eslint './**' "
   },
   "type": "module",
   "repository": {

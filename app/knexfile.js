@@ -8,8 +8,8 @@ dotenv.config();
 //Database connection
 
 export default {
-  development: {
-    client: "pg",
+development: {
+		client: 'pg',
 
     connection: {
       connectionString: process.env.DATABASE_URL,
