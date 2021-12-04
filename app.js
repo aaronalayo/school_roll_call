@@ -5,7 +5,7 @@ import http from 'http';
 
 import objection from 'objection';
 import Knex from 'knex';
-import connection from './app/knexfile.js';
+import connection from './knexfile.js';
 const app = express();
 const server = http.createServer(app);
 const { Model } = objection;

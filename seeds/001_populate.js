@@ -51,8 +51,8 @@ export async function seed(knex) {
                   ]).returning("person_uuid")
                     .then(([person_uuid])  =>  {
                       return knex('roles').select().then(roles =>{
-                        return knex('users').insert([
-                          {username: 'aaro0186', password: hashedPassword, email: 'aaro0186@stud.kea.dk', role_uuid: roles.find(role => role.role ==='STUDENT').roleUuid, 
+                        return knex('users').insert([  
+                          {username: 'aaro0186', password: hashedPassword, email: 'aaro0186@stud.kea.dk', role_uuid: roles.find(role => role.role ==='STUDENT').role_uuid, 
                           person_uuid:person_uuid}   
                       ])
                       })
