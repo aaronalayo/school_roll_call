@@ -13,34 +13,37 @@ import Knex from "knex";
 import connection from "./knexfile.js"
 const knex = Knex(connection.development);
 knex.on("query", function (queryData) {
-  // console.log( queryData );
+  console.log( queryData );
 });
-// knex.on('query', console.log);
+knex.on('query', console.log);
 
 Model.knex(knex);
 
-// import School from "./model/School.js";
+import School from "./model/School.js";
 
-// async function getPublicIp(){
+async function getPublicIp(){
 
-//     console.log(await publicIp.v4());
-//     //=> '46.5.21.123'
+   const myIp =  await publicIp.v4();
+    //=> '46.5.21.123'
   
-//     console.log(await publicIp.v6());
-//     //=> 'fe80::200:f8ff:fe21:67cf'
-  
-// }
+    // await publicIp.v6();
+    //=> 'fe80::200:f8ff:fe21:67cf'
+  return myIp;
+}
 
 app.get('/', async (req, res) => {
-//   const myIp = ip.address('public', "ipv4")
-//   const school = await School.query().select().where({school_ip : "94.18.243.162"});
-//  getPublicIp().then((data)=>{
-//   //  console.log(data)
-//     const school = School.query().select().where({school_ip : data});
-//     const result = ip.isEqual(data, school[0].school_ip)
-//     console.log(result)
- 
+ const myIp = await getPublicIp();
+ console.log(myIp)
+const school = await School.query().select().where({school_ip : myIp});
+
+// const result = ip.isEqual(myIp, school[0].school_ip)
+// console.log(result)
+if(school.length === 0 || typeof school === "undefined"){
+  res.send("You are not at school")
+}else{
   res.send("Hello")
+}
+
 });
 
 const port = process.env.PORT ? process.env.PORT : 8080;

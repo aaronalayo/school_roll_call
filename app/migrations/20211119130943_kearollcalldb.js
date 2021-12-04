@@ -10,8 +10,8 @@ export async function up(knex) {
   AS
   $$
   BEGIN
-      NEW.created_at = CURRENT_TIMESTAMP + (hour * interval '1 hour');  
-      NEW.updated_at = now();
+      NEW.created_at = CURRENT_TIMESTAMP;  
+      NEW.updated_at = CURRENT_TIMESTAMP;
       RETURN NEW;
   END;
   $$;
@@ -27,8 +27,7 @@ export async function up(knex) {
       table.string("school_name").notNullable();
       table.string("school_address").notNullable();
       table.string("school_ip").notNullable();
-      table.timestamps(false, true)
-      
+      table.timestamps(false, true) 
       table.index(['school_uuid'], 'index_schools');
     }).raw(`
     CREATE TRIGGER update_timestamp
@@ -102,6 +101,7 @@ export async function up(knex) {
         .primary()
         .notNullable()
         .defaultTo(knex.raw("uuid_generate_v4()"));
+      table.string("username").notNullable();
       table.string("password").notNullable();
       table.string("email").notNullable();
       table.uuid('role_uuid').notNullable();
