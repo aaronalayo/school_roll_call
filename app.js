@@ -18,7 +18,7 @@ Model.knex(knex);
 
 // import School from './model/School.js';
 
-// async function getPublicIp(){
+async function getPublicIp(){
 
 //     console.log(await publicIp.v4());
 //     //=> '46.5.21.123'
