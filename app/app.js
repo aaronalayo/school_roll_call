@@ -1,7 +1,5 @@
 import express from 'express';
 import http from  'http';
-import ip from 'ip';
-import publicIp from 'public-ip'
 const app = express();
 const server = http.createServer(app);
 
@@ -10,12 +8,12 @@ const server = http.createServer(app);
 import objection from 'objection';
 const { Model } = objection;
 import Knex from 'knex';
-import connection from './knexfile.js'
+import connection from './knexfile.js';
 const knex = Knex(connection.development);
-knex.on('query', function (queryData) {
-  // console.log( queryData );
+knex.on('query', function ( queryData) {
+	console.log( queryData );
 });
-// knex.on('query', console.log);
+
 
 
 Model.knex(knex);
@@ -41,14 +39,14 @@ app.get('/', async (req, res) => {
 //     const result = ip.isEqual(data, school[0].school_ip)
 //     console.log(result)
  
-  res.send('Hello')
+	res.send('Hello');
 });
 
 const port = process.env.PORT ? process.env.PORT : 8080;
 const port2 = '0.0.0.0';
 server.listen(port, port2, (error) => {
-  if (error) {
-    console.log('error running the server');
-  }
-  console.log('App listening on port: ', server.address().port);
+	if (error) {
+		console.log('error running the server');
+	}
+	console.log('App listening on port: ', server.address().port);
 });
