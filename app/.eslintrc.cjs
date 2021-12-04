@@ -4,9 +4,10 @@ module.exports = {
 		'es2021': true,
 		'node': true
 	},
+	'ignorePatterns': ['package.json', 'package-lock.json'],
 	'extends': 'eslint:recommended',
 	'parserOptions': {
-		'ecmaVersion': 13,
+		'ecmaVersion': 12,
 		'sourceType': 'module'
 	},
 	'rules': {

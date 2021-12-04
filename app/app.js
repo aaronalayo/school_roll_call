@@ -1,20 +1,18 @@
 import express from 'express';
-import http from  'http';
-const app = express();
-const server = http.createServer(app);
+import http from 'http';
 
 // Setup Objection + Knex
 
 import objection from 'objection';
-const { Model } = objection;
 import Knex from 'knex';
 import connection from './knexfile.js';
+const app = express();
+const server = http.createServer(app);
+const { Model } = objection;
 const knex = Knex(connection.development);
-knex.on('query', function ( queryData) {
-	console.log( queryData );
+knex.on('query', function (queryData) {
+	console.log(queryData);
 });
-
-
 
 Model.knex(knex);
 
@@ -24,10 +22,10 @@ Model.knex(knex);
 
 //     console.log(await publicIp.v4());
 //     //=> '46.5.21.123'
-  
+
 //     console.log(await publicIp.v6());
 //     //=> 'fe80::200:f8ff:fe21:67cf'
-  
+
 // }
 
 app.get('/', async (req, res) => {
@@ -38,7 +36,7 @@ app.get('/', async (req, res) => {
 //     const school = School.query().select().where({school_ip : data});
 //     const result = ip.isEqual(data, school[0].school_ip)
 //     console.log(result)
- 
+
 	res.send('Hello');
 });
 

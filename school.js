@@ -1,5 +1,4 @@
 
-
 // const seed = async function(knex) {
 //     return knex('school').select().then(school =>{
 //         return knex('schools').insert([

@@ -1,7 +1,5 @@
 
-
-
-export async function up(knex) {
+export async function up (knex) {
 	await knex.schema
 		.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
 		.raw(`
@@ -16,7 +14,7 @@ export async function up(knex) {
   END;
   $$;
 `);
-  
+
 	return knex.schema
 		.createTable('schools', (table) => {
 			table
@@ -28,7 +26,7 @@ export async function up(knex) {
 			table.string('school_address').notNullable();
 			table.string('school_ip').notNullable();
 			table.timestamps(false, true);
-      
+
 			table.index(['school_uuid'], 'index_schools');
 		}).raw(`
     CREATE TRIGGER update_timestamp
@@ -86,7 +84,6 @@ export async function up(knex) {
 			table.uuid('department_uuid');
 			table.timestamps(false, true);
 			table.index(['person_uuid'], 'index_people');
-
 		})
 		.createTable('roles', (table) => {
 			table
@@ -110,7 +107,6 @@ export async function up(knex) {
 			table.foreign('role_uuid').references('roles.role_uuid');
 			table.foreign('person_uuid').references('people.person_uuid');
 			table.index(['person_uuid'], 'index_users');
-
 		})
 		.createTable('registrations', (table) => {
 			table
@@ -153,10 +149,7 @@ export async function up(knex) {
 		});
 }
 
-
-
-
-export async function down(knex) {
+export async function down (knex) {
 	await knex.schema
 		.raw('DROP FUNCTION IF EXISTS update_timestamp() CASCADE;');
 	return knex.schema
@@ -165,14 +158,11 @@ export async function down(knex) {
 		.dropTable('attendances')
 		.dropTable('registrations')
 		.dropTable('subjects')
-    
+
 		.dropTable('users')
-		.dropTable('roles') 
+		.dropTable('roles')
 		.dropTable('people')
 		.dropTable('programs')
 		.dropTable('departments')
 		.dropTable('schools');
-    
-    
 }
-

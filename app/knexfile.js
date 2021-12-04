@@ -1,11 +1,10 @@
 '--unhandled-rejections=strict';
 
 import dotenv from 'dotenv';
-import fs from 'fs';
 import objection from 'objection';
 const { knexSnakeCaseMappers } = objection;
 dotenv.config();
-//Database connection
+// Database connection
 
 export default {
 	development: {
@@ -15,8 +14,8 @@ export default {
 			connectionString: process.env.DATABASE_URL,
 			ssl: {
 				rejectUnauthorized: false
-			},
-		},
+			}
+		}
 	},
 	pool: {
 		afterCreate: function (conn, done) {
@@ -36,6 +35,5 @@ export default {
 			});
 		}
 	},
-	...knexSnakeCaseMappers()
+	'': knexSnakeCaseMappers()
 };
-
