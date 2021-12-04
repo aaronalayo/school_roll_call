@@ -10,7 +10,7 @@ const server = http.createServer(app);
 import objection from "objection";
 const { Model } = objection;
 import Knex from "knex";
-import connection from "./knexfile.js"
+import connection from "./app/knexfile.js"
 const knex = Knex(connection.development);
 knex.on("query", function (queryData) {
   console.log( queryData );
@@ -19,7 +19,7 @@ knex.on('query', console.log);
 
 Model.knex(knex);
 
-import School from "./model/School.js";
+import School from "./app/model/School.js";
 
 async function getPublicIp(){
 
