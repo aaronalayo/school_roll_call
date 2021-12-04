@@ -26,7 +26,7 @@ async function getPublicIp(){
 //     console.log(await publicIp.v6());
 //     //=> 'fe80::200:f8ff:fe21:67cf'
 
-// }
+}
 
 app.get('/', async (req, res) => {
 //   const myIp = ip.address('public', 'ipv4')
