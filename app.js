@@ -14,7 +14,7 @@ knex.on("query", function (queryData) {
 	console.log(queryData);
 });
 
-Model.knex(knex)
+Model.knex(knex);
 
 // import School from './model/School.js';
 
