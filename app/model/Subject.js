@@ -1,26 +1,26 @@
-import objection from 'objection';
+import objection from "objection";
 const { Model } = objection;
 
 class Subject extends Model {
 	static get tableName () {
-		return 'subjects';
+		return "subjects";
 	}
 
 	static get relationMappings () {
 		return {
 			programs: {
 				relation: Model.HasManyRelation,
-				modelClass: __dirname + '/Program.js',
+				modelClass: __dirname + "/Program.js",
 				join: {
-					from: 'programs.program_uuid',
-					to: 'subjects.subject_uuid'
+					from: "programs.program_uuid",
+					to: "subjects.subject_uuid"
 				}
 			}
 		};
 	}
 
 	static get idColumn () {
-		return 'subjects.subject_uuid';
+		return "subjects.subject_uuid";
 	}
 }
 

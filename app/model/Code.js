@@ -1,26 +1,26 @@
-import objection from 'objection';
+import objection from "objection";
 const { Model } = objection;
 
 class Code extends Model {
 	static get tableName () {
-		return 'codes';
+		return "codes";
 	}
 
 	static get relationMappings () {
 		return {
 			persons: {
 				relation: Model.HasManyRelation,
-				modelClass: __dirname + '/Person.js',
+				modelClass: __dirname + "/Person.js",
 				join: {
-					from: 'persons.person_uuid',
-					to: 'codes.code_uuid'
+					from: "persons.person_uuid",
+					to: "codes.code_uuid"
 				}
 			}
 		};
 	}
 
 	static get idColumn () {
-		return 'codes.code_uuid';
+		return "codes.code_uuid";
 	}
 }
 
