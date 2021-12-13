@@ -1,6 +1,6 @@
 export async function up(knex) {
 	await knex.schema
-		.raw("CREATE EXTENSION IF NOT EXISTS 'uuid-ossp'")
+		.raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 		.raw(`
 	CREATE OR REPLACE FUNCTION update_timestamp() RETURNS TRIGGER
 	LANGUAGE plpgsql
@@ -24,7 +24,8 @@ export async function up(knex) {
 			table.string("school_name").notNullable();
 			table.string("school_address").notNullable();
 			table.string("school_ip").notNullable();
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.index(["school_uuid"], "index_schools");
 		}).raw(`
 	  CREATE TRIGGER update_timestamp
@@ -42,7 +43,8 @@ export async function up(knex) {
 			table.string("department_name").notNullable();
 			table.string("department_address").notNullable();
 			table.uuid("school_uuid").notNullable();
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.foreign("school_uuid").references("schools.school_uuid");
 			table.index(["department_uuid"], "index_department");
 		})
@@ -54,7 +56,8 @@ export async function up(knex) {
 				.defaultTo(knex.raw("uuid_generate_v4()"));
 			table.string("program_name").notNullable();
 			table.uuid("department_uuid");
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.foreign("department_uuid").references("departments.department_uuid");
 			table.index(["program_uuid"], "index_programs");
 		})
@@ -68,7 +71,8 @@ export async function up(knex) {
 			table.string("subject_description");
 			table.uuid("program_uuid");
 			table.foreign("program_uuid").references("programs.program_uuid");
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.index(["subject_uuid"], "index_subject");
 		})
 		.createTable("people", (table) => {
@@ -80,7 +84,8 @@ export async function up(knex) {
 			table.string("person_full_name").notNullable();
 			table.string("person_phone_number").notNullable();
 			table.uuid("department_uuid");
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.index(["person_uuid"], "index_people");
 		})
 		.createTable("roles", (table) => {
@@ -102,7 +107,8 @@ export async function up(knex) {
 			table.string("email").notNullable();
 			table.uuid("role_uuid").notNullable();
 			table.uuid("person_uuid");
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.foreign("role_uuid").references("roles.role_uuid");
 			table.foreign("person_uuid").references("people.person_uuid");
 			table.index(["person_uuid"], "index_users");		
@@ -127,7 +133,8 @@ export async function up(knex) {
 				.notNullable();
 			table.uuid("user_uuid");
 			table.uuid("subject_uuid");
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.foreign("user_uuid").references("users.user_uuid");
 			table.foreign("subject_uuid").references("subjects.subject_uuid");
 			table.index(["attendance_uuid"], "index_attendances");
@@ -140,7 +147,8 @@ export async function up(knex) {
 				.defaultTo(knex.raw("uuid_generate_v4()"));
 			table.string("code").notNullable();
 			table.uuid("user_uuid");
-			table.timestamps(false, true);
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
 			table.timestamp("expires_at")
 				.defaultTo(knex.raw("? + INTERVAL '? minute'", [knex.fn.now(), 60]));
 			table.foreign("user_uuid").references("users.user_uuid");
