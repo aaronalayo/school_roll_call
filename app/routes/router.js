@@ -35,9 +35,9 @@ router.get("/login", async (req, res) => {
 		}
 	}
 });
-router.post("/login", passport.authenticate('local', { failureRedirect: '/login' }),
-function(req, res) {
-    res.send('You are logged in');
-    // console.log(req.user.username)
-});
+router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
+	function(req, res) {
+		res.send("You are logged in");
+		// console.log(req.user.username)
+	});
 export { router };

@@ -43,14 +43,14 @@ app.use(passport.session());
 import User from "./app/model/User.js";
 passport.serializeUser((user, done) => {
 	// console.log(user)
-    done(null, user.user_uuid);
-  });
+	done(null, user.user_uuid);
+});
 
-  passport.deserializeUser((user_uuid, done) => {
-    knex('users').where({user_uuid}).first()
-    .then((user) => { done(null, user); })
-    .catch((err) => { done(err,null); });
-  });
+passport.deserializeUser((user_uuid, done) => {
+	knex("users").where({user_uuid}).first()
+		.then((user) => { done(null, user); })
+		.catch((err) => { done(err,null); });
+});
 
 
 passport.use(new LocalStrategy(
@@ -72,18 +72,18 @@ passport.use(new LocalStrategy(
 	}
 ));
 
-function adminLoggedIn(req, res, next) {
-	if (req.user){
-		if (req.user.role == "admin") {
-			next();
-		} else {
-			res.send("you have to be an admin to access this page !");
-		}
-	}
-	else {
-		res.send("you have to be logged in as admin to access this page !");
-	}
-}
+// function adminLoggedIn(req, res, next) {
+// 	if (req.user){
+// 		if (req.user.role == "admin") {
+// 			next();
+// 		} else {
+// 			res.send("you have to be an admin to access this page !");
+// 		}
+// 	}
+// 	else {
+// 		res.send("you have to be logged in as admin to access this page !");
+// 	}
+// }
 
 
 
