@@ -20,8 +20,6 @@ const knex = Knex(connection.development);
 
 Model.knex(knex);
 
-beforeEach
-
 afterAll(() => {
 	knex.destroy();
 });
