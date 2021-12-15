@@ -12,7 +12,8 @@
     "cleandb": "knex migrate:rollback && knex migrate:latest",
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "jest",
+    "unit-test": "jest --verbose ./tests_unit",
+    "integration-test": "jest --verbose ./tests_integration",
     "lint": "eslint './**' ",
     "fix-syntax": "npx eslint './**' --fix"
   },
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/aaronalayo/kea_roll_call#readme",
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.5",
     "eslint": "^7.32.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-standard": "^16.0.3",

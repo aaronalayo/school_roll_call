@@ -7,7 +7,7 @@ import * as fs from "fs";
 import School from "../model/School.js";
 import getPublicIp from "../middleware/getPublicIp.js";
 import checkIp from "../middleware/checkIp.js";
-import passport from "passport";
+// import passport from "passport";
 
 const homePage = fs.readFileSync("./public/homepage.html", "utf8");
 
@@ -35,9 +35,10 @@ router.get("/login", async (req, res) => {
 		}
 	}
 });
-router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
-	function(req, res) {
-		res.send("You are logged in");
-		// console.log(req.user.username)
-	});
+
+// router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
+// 	function(req, res) {
+// 		res.send("You are logged in");
+// 		// console.log(req.user.username)
+// 	});
 export { router };
