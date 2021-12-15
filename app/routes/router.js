@@ -57,13 +57,19 @@ passport.use(new LocalStrategy(
 			return done(null, false, { message: "Incorrect username and/or password." });
 		}else {
 			const user = await User.query().select().where({ username: username });
-			bcrypt.compare(password, user[0].password, function (err, result) {
-				if (!user || result == false) {
-					return done(null, false, { message: "Incorrect username and/or password." });
-				} else {
-					return done(null, user[0]);
-				}
-			});
+			// console.log(user)
+			if (!user || user.length === 0) {
+				return done(null, false, { message: "Incorrect username and/or password." });
+			}else{
+				bcrypt.compare(password, user[0].password, function (err, result) {
+					if (!user || result == false) {
+						return done(null, false, { message: "Incorrect username and/or password." });
+					} else {
+						return done(null, user[0]);
+					}
+				});
+			}
+		
 		}	
 	}
 ));
@@ -104,7 +110,7 @@ router.get("/loginstudents",access, (req, res) =>{
 router.get("/loginteachers", (req, res) =>{
 	res.send(loginteachersPage);
 });
-router.post("/loginstudents", passport.authenticate("local", { failureRedirect: "/loginstudents" }),
+router.post("/loginstudents", passport.authenticate("local", { failureMessage:"Incorrect username and/or password.", failureRedirect: "/loginteachers"}),
 	async function(req, res) {
 		const role = await Role.query().select("role").where({role_uuid: req.user.role_uuid});
 		// console.log(role[0].role)
@@ -115,7 +121,7 @@ router.post("/loginstudents", passport.authenticate("local", { failureRedirect: 
 		}
 	});
 
-router.post("/loginteachers", passport.authenticate("local", { failureRedirect: "/loginteachers" }),
+router.post("/loginteachers", passport.authenticate("local", {failureRedirect: "/loginteachers"}),
 	async function (req, res) {
 		const role = await Role.query().select("role").where({ role_uuid: req.user.role_uuid });
 		if (role[0].role === "TEACHER") {
