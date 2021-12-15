@@ -76,6 +76,7 @@ jobs:
 
     steps:
 
+    - uses: actions/checkout@v2
     - name: Connect to PostgreSQL
         # Runs a script that creates a PostgreSQL table, populates
         # the table with data, and then retrieves the data
@@ -86,10 +87,7 @@ jobs:
         POSTGRES_HOST: localhost
         # The default PostgreSQL port
         POSTGRES_PORT: 5432
-    
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+
       with:
         node-version: ${{ matrix.node-version }}
 
