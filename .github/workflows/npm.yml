@@ -47,7 +47,7 @@ jobs:
       
       - name: Run integration-tests
         run: npm run integration-test
-        
+
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/
           # The hostname used to communicate with the PostgreSQL service container
@@ -71,6 +71,7 @@ jobs:
 
     - run: npm install
     - run: npm run build --if-present
+    - run: npm run migrate:latest
     
   unit-test:
     runs-on: ubuntu-latest
