@@ -48,8 +48,9 @@ jobs:
       - name: Run integration-tests
         run: npm run integration-test
 
-        # Environment variables used by the `client.js` script to create a new PostgreSQL table.
+
         env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/
           # The hostname used to communicate with the PostgreSQL service container
           POSTGRES_HOST: postgres
           # The default PostgreSQL port
