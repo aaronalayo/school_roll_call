@@ -29,28 +29,25 @@ jobs:
 
     steps:
       # Downloads a copy of the code in your repository before running CI tests
+      - uses: actions/checkout@v2
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/setup-node@v2
 
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
       - name: Install dependencies
-        uses: actions/setup-node@v2
+        
         run: npm install
 
       - name: Migrate database tables
-        uses: actions/setup-node@v2
         run: npm run migrate:latest
 
       - name: Seed database tables
-        uses: actions/setup-node@v2
         run: npm run seed:run
       
       - name: Run integration-tests
-        uses: actions/setup-node@v2
         run: npm run integration-test
-
-
+        
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/
           # The hostname used to communicate with the PostgreSQL service container
