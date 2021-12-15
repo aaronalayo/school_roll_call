@@ -5,7 +5,7 @@ on: [push, pull_request]
 
 jobs:
 
-  container-job:
+  integration-tests:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
@@ -35,12 +35,19 @@ jobs:
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Connect to PostgreSQL
+      - name: Migrate database tables
         # Runs a script that creates a PostgreSQL table, populates
         # the table with data, and then retrieves the data.
-        run: node client.js
+        run: npm run migrate:latest
+
+      - name: Seed database tables
+        run: npm run seed:run
+      
+      - name: Run integration-tests
+        run: npm run integration-test
+
         # Environment variables used by the `client.js` script to create a new PostgreSQL table.
         env:
           # The hostname used to communicate with the PostgreSQL service container
@@ -88,24 +95,24 @@ jobs:
     - run: npm install
     - run: npm run unit-test
 
-  integration-test:
+  # integration-test:
 
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./app
+  #   strategy:
+  #     matrix:
+  #       node-version: [12.x, 14.x, 16.x]
+  #       # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Use Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v2
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
 
-    - run: npm install
-    - run: npm run integration-test
+  #   - run: npm install
+  #   - run: npm run integration-test
 
