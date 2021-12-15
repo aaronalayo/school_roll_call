@@ -5,22 +5,6 @@ on: [push, pull_request]
 
 jobs:
 
-  syntax-check:
-    runs-on: ubuntu-latest
-    strategy:
-        matrix:
-          node-version: [12.x, 14.x, 16.x]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    
-    - run: npm install
-    - run: npm run lint
-
   build:
     runs-on: ubuntu-latest
     defaults:
@@ -62,6 +46,7 @@ jobs:
     - run: npm run unit-test
 
   integration-test:
+
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -71,7 +56,37 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
     steps:
+
+    - name: Connect to PostgreSQL
+        # Runs a script that creates a PostgreSQL table, populates
+        # the table with data, and then retrieves the data
+        # Environment variables used by the `client.js` script to create
+        # a new PostgreSQL table.
+      env:
+          # The hostname used to communicate with the PostgreSQL service container
+        POSTGRES_HOST: localhost
+        # The default PostgreSQL port
+        POSTGRES_PORT: 5432
+    
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
@@ -79,5 +94,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - run: npm install
+    - run: npm run migrate:latest
+    - run: npm run seen:run
     - run: npm run integration-test
 

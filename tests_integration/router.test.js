@@ -20,6 +20,8 @@ const knex = Knex(connection.development);
 
 Model.knex(knex);
 
+beforeEach
+
 afterAll(() => {
 	knex.destroy();
 });
@@ -39,5 +41,4 @@ test("login route works", done => {
 		.get("/login")
 		.expect("Welcome student")
 		.expect(200, done);
-	
 });
