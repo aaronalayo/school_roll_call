@@ -42,6 +42,7 @@ jobs:
         env:
           DATABASE_URL: post{gres://postgres:postgres@localhost:5432/postgres
 
+      - run: echp $DATABASE_URL
       - run: npm install
       - run: npm run migrate:latest
       - run: npm run seed:run
