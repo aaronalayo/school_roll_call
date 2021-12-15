@@ -40,7 +40,7 @@ jobs:
           node-version: 16.x
           # The hostname used to communicate with the PostgreSQL service container
         env:
-          DATABASE_URL: post{gres://postgres:postgres@localhost:5432/postgres
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
       - run: echo $DATABASE_URL
       - run: npm install
