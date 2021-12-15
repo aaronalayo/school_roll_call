@@ -37,3 +37,4 @@ export default {
 		"": knexSnakeCaseMappers()
 	},
 };
+console.log(process.env.DATABASE_URL);
