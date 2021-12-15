@@ -32,25 +32,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: Check out repository code
         uses: actions/setup-node@v2
-
-      # Performs a clean installation of all dependencies in the `package.json` file
-      # For more information, see https://docs.npmjs.com/cli/ci.html
-      - name: Install dependencies
-        
-        run: npm install
-
-      - name: Migrate database tables
-        run: npm run migrate:latest
-
-      - name: Seed database tables
-        run: npm run seed:run
-      
-      - name: Run integration-tests
-        run: npm run integration-test
-
+        with: 
+          node-version: 16.x
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgress
           # The hostname used to communicate with the PostgreSQL service container
+
+      - run: npm install
+      - run: npm run migrate:latest
+      - run: npm run seed:run
+      - run: npm run integration-test
 
   build:
     runs-on: ubuntu-latest
