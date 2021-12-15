@@ -35,11 +35,9 @@ jobs:
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Migrate database tables
-        # Runs a script that creates a PostgreSQL table, populates
-        # the table with data, and then retrieves the data.
         run: npm run migrate:latest
 
       - name: Seed database tables
@@ -52,9 +50,6 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/
           # The hostname used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: postgres
-          # The default PostgreSQL port
-          POSTGRES_PORT: 5432
 
   build:
     runs-on: ubuntu-latest
