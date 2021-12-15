@@ -20,6 +20,7 @@ jobs:
         # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: postgres
+          POSTGRES_USERNAME: postgres
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -40,7 +41,7 @@ jobs:
           # The hostname used to communicate with the PostgreSQL service container
         env:
           DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
-
+      - run: echo DATABASE_URL
       - run: npm install
       - run: npm run migrate:latest
       - run: npm run seed:run
