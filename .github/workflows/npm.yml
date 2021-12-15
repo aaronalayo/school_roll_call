@@ -34,8 +34,6 @@ jobs:
         uses: actions/setup-node@v2
         with: 
           node-version: 16.x
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgress
           # The hostname used to communicate with the PostgreSQL service container
 
       - run: npm install
@@ -43,6 +41,9 @@ jobs:
       - run: npm run seed:run
       - run: npm run integration-test
 
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgress
+          
   build:
     runs-on: ubuntu-latest
     defaults:
