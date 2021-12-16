@@ -5,24 +5,25 @@ import * as fs from "fs";
 import School from "../model/School.js";
 import Role from "../model/Role.js";
 import User from "../model/User.js";
+import Code from "../model/Code.js";
 import getPublicIp from "../middleware/getPublicIp.js";
+import codeGenerator from "../middleware/codeGenerator.js";
 import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import connection from "../../knexfile.js";
+import Knex from "knex";
 
 const homePage = fs.readFileSync("./public/homepage.html", "utf8");
 const loginPage = fs.readFileSync("./public/loginpage.html", "utf8");
-const wrongCred = fs.readFileSync("./public/wrongcred.html", "utf8");
-
-let loginTries = 3;
+const studentPage = fs.readFileSync("./public/studentpage.html", "utf8");
+const teacherPage = fs.readFileSync("./public/teacherpage.html", "utf8");
 
 let router = express.Router();
 router.use(express.static("public"));
 dotenv.config();
 
-import connection from "../../knexfile.js";
-import Knex from "knex";
 const knex = Knex(connection.development);
 
 let LocalStrategy = passportLocal.Strategy;
@@ -38,7 +39,6 @@ router.use(passport.session());
 // import Role from "./app/model/Role.js";
 
 passport.serializeUser((user, done) => {
-	// console.log(user)
 	done(null, user.user_uuid);
 });
 
@@ -75,6 +75,7 @@ router.get("/", async (req, res) =>{
 });
 
 
+
 async function access (req, res, next) {
 	const studentIp = await getPublicIp();
 	// console.log(studentIp);
@@ -95,36 +96,45 @@ router.get("/login", access, (req, res) =>{
 	res.send(loginPage);
 });
 
-router.get("/api/incorrect-credentials", access, (req, res) => {
-	if (loginTries === 0){
-		console.log("Too many tries");
-	} else {
-		loginTries -= 1;
-		res.send(wrongCred);
-	}
-});
-
-router.post("/login", passport.authenticate("local", { failureRedirect: "/api/incorrect-credentials" }),
+router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
 	async function(req, res) {
 		const role = await Role.query().select("role").where({role_uuid: req.user.role_uuid});
 		// console.log(role[0].role)
 		if(role[0].role === "STUDENT"){
-			res.send("WELCOME STUDENT "+ req.user.username); 
+			res.redirect("/logged-in/students/"+ req.user.user_uuid);
 		}
 		else if((role[0].role === "TEACHER")){
-			res.send("you have to be a student to access this page !");
+			res.redirect("/logged-in/teachers/" + req.user.user_uuid);
 		}
-	});
-
-router.post("/loginteachers", passport.authenticate("local", { failureRedirect: "/loginteachers" }),
-	async function (req, res) {
-		const role = await Role.query().select("role").where({ role_uuid: req.user.role_uuid });
-		if (role[0].role === "TEACHER") {
-			res.send("WELCOME TEACHER "+ req.user.username);
-		} else {
-			res.send("you have to be a teacher to access this page !");
-		}
-        
 	});
 
 export { router };
+
+router.get("/logged-in/teachers/:uuid", async (req, res) => {
+
+	const code = await codeGenerator();
+	await knex("codes").insert({code: code, user_uuid: req.params.uuid});
+	res.send("<h1>Generated code: " + code.toString() + "</h1>");
+
+});
+
+router.get("/logged-in/students/:uuid", async (req, res) => {
+	res.send(studentPage);
+});
+
+router.post("/post-code", async (req, res) => {
+	const isOK = await Code.query().select("code").where({code: req.body.code});
+	if (isOK.length === 0){
+		res.redirect("/incorrect-code");
+	}else {
+		res.redirect("/code-ok");
+	}
+});
+
+router.get("/incorrect-code", (req, res) => {
+	res.send("Incorrect Code");
+});
+
+router.get("/code-ok", (req, res) => {
+	res.send("You are checked in!");
+});
