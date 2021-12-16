@@ -6,23 +6,24 @@ import School from "../model/School.js";
 import Role from "../model/Role.js";
 import User from "../model/User.js";
 import getPublicIp from "../middleware/getPublicIp.js";
-// import checkIp from "../middleware/checkIp.js";
 import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
-router.use(express.static("public"));
+const homePage = fs.readFileSync("./public/homepage.html", "utf8");
+const loginPage = fs.readFileSync("./public/loginpage.html", "utf8");
+const wrongCred = fs.readFileSync("./public/wrongcred.html", "utf8");
+
+let loginTries = 3;
+
 let router = express.Router();
+router.use(express.static("public"));
 dotenv.config();
 
 import connection from "../../knexfile.js";
 import Knex from "knex";
 const knex = Knex(connection.development);
-// knex.on("query", function (queryData) {
-// 	console.log(queryData);
-// });
-
 
 let LocalStrategy = passportLocal.Strategy;
 
@@ -47,6 +48,7 @@ passport.deserializeUser((user_uuid, done) => {
 		.catch((err) => { done(err,null); });
 });
 
+
 passport.use(new LocalStrategy(
 	async function (username, password, done) {
 		// console.log(username, password);
@@ -54,6 +56,9 @@ passport.use(new LocalStrategy(
 			return done(null, false, { message: "Incorrect username and/or password." });
 		}else {
 			const user = await User.query().select().where({ username: username });
+			if (!user.length){			
+				return done(null, false, { message: "Incorrect username and/or password." });
+			}
 			bcrypt.compare(password, user[0].password, function (err, result) {
 				if (!user || result == false) {
 					return done(null, false, { message: "Incorrect username and/or password." });
@@ -64,9 +69,6 @@ passport.use(new LocalStrategy(
 		}	
 	}
 ));
-const homePage = fs.readFileSync("./public/homepage.html", "utf8");
-const loginstudentsPage = fs.readFileSync("./public/loginstudents.html", "utf8");
-const loginteachersPage = fs.readFileSync("./public/loginteachers.html", "utf8");
 
 router.get("/", async (req, res) =>{
 	return res.send(homePage);
@@ -84,30 +86,32 @@ async function access (req, res, next) {
 		if(!school || school === undefined || school.length === 0 ){
 			res.send("No school found");
 		}else {
-			// const result = checkIp(studentIp, school[0].school_ip);
-			// // console.log(result);
-			// if(result == false){
-			// 	res.send("You are not at school").redirect("/");
-			// }else{
 			next();
-			// }
 		}
 	}
 }
 
-router.get("/loginstudents",access, (req, res) =>{
-	res.send(loginstudentsPage);
+router.get("/login", access, (req, res) =>{
+	res.send(loginPage);
 });
-router.get("/loginteachers", (req, res) =>{
-	res.send(loginteachersPage);
+
+router.get("/api/incorrect-credentials", access, (req, res) => {
+	if (loginTries === 0){
+		console.log("Too many tries");
+	} else {
+		loginTries -= 1;
+		res.send(wrongCred);
+	}
 });
-router.post("/loginstudents", passport.authenticate("local", { failureRedirect: "/loginstudents" }),
+
+router.post("/login", passport.authenticate("local", { failureRedirect: "/api/incorrect-credentials" }),
 	async function(req, res) {
 		const role = await Role.query().select("role").where({role_uuid: req.user.role_uuid});
 		// console.log(role[0].role)
-		if((role[0].role === "STUDENT")){
+		if(role[0].role === "STUDENT"){
 			res.send("WELCOME STUDENT "+ req.user.username); 
-		}else {
+		}
+		else if((role[0].role === "TEACHER")){
 			res.send("you have to be a student to access this page !");
 		}
 	});
