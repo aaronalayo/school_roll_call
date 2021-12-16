@@ -3,6 +3,7 @@ const saltRounds = 12;
 
 export async function seed(knex) {
 	const hashedPassword = await bcrypt.hash("gambetta", saltRounds);
+	const hashedPassword2 = await bcrypt.hash("kea", saltRounds);
 	// Deletes ALL existing entries
 	return knex("users").del()
 		.then(function () {
@@ -47,13 +48,16 @@ export async function seed(knex) {
 											]);
 										}).then(function () {
 											return knex("people").insert([
-												{ person_full_name: "Aaron ALAYO", person_phone_number: "50571216", department_uuid:department_uuid }
+												{ person_full_name: "Aaron ALAYO", person_phone_number: "50571216", department_uuid:department_uuid },
+												{ person_full_name: "Carlos Santana", person_phone_number: "57141215", department_uuid:department_uuid },
 											]).returning("person_uuid")
 												.then(([person_uuid])  =>  {
 													return knex("roles").select().then(roles =>{
 														return knex("users").insert([  
 															{username: "aaro0186", password: hashedPassword, email: "aaro0186@stud.kea.dk", role_uuid: roles.find(role => role.role ==="STUDENT").role_uuid, 
-																person_uuid:person_uuid}   
+																person_uuid:person_uuid},
+															{username: "carlo0186", password: hashedPassword2, email: "carlo0186@teach.kea.dk", role_uuid: roles.find(role => role.role ==="TEACHER").role_uuid, 
+																person_uuid:person_uuid}     
 														]);
 													});
 												});
