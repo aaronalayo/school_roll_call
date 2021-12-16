@@ -22,8 +22,3 @@ test("codeGenerator code lenght", async () => {
 	const code = await codeGenerator();
 	expect(code.lenght !== 6);
 });
-
-test("codeGenerator code dublicate code", async () => {
-	const code = await codeGenerator();
-	expect(code.lenght !== 6);
-});

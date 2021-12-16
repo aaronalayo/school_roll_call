@@ -7,10 +7,14 @@ import Knex from "knex";
 import * as fs from "fs";
 import connection from "../knexfile.js";
 import objection from "objection";
-// import { test } from "media-typer";
+import User from "../app/model/User.js";
+import Code from "../app/model/Code";
+
 
 const homePage = fs.readFileSync("./public/homepage.html", "utf8");
 const loginPage = fs.readFileSync("./public/loginpage.html", "utf8");
+const studentPage = fs.readFileSync("./public/studentpage.html", "utf8");
+const teacherPage = fs.readFileSync("./public/teacherpage.html", "utf8");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -55,4 +59,41 @@ test("code-ok route works", done => {
 		.get("/code-ok")
 		.expect("You are checked in!")
 		.expect(200, done);
+});
+
+test("students logged-in", async () => {
+	const student_uuid = await User.query().select("user_uuid").where({username: "Test-user-student"});
+
+	return request(app)
+		.get("/logged-in/students/" + student_uuid[0].user_uuid)
+		.expect(studentPage)
+		.expect(200);
+
+});
+
+test("teachers logged-in", async () => {
+	const teacher_uuid = await User.query().select("user_uuid").where({username: "Test-user-teacher"});
+	return request(app)
+		.get("/logged-in/teachers/" + teacher_uuid[0].user_uuid)
+		.expect(200);	
+});
+
+test("log-in function student", async () => {
+	const data = { username: "Test-user-student", password: "test" };
+	const student_uuid = await User.query().select("user_uuid").where({username: "Test-user-student"});
+	return request(app)
+		.post("/login")
+		.set("Content-type", "application/json")
+		.send(data)
+		.expect("Location", "/logged-in/students/" + student_uuid[0].user_uuid);
+});
+
+test("log-in function teacher", async () => {
+	const data = { username: "Test-user-teacher", password: "test" };
+	const teacher_uuid = await User.query().select("user_uuid").where({username: "Test-user-teacher"});
+	return request(app)
+		.post("/login")
+		.set("Content-type", "application/json")
+		.send(data)
+		.expect("Location", "/logged-in/teachers/" + teacher_uuid[0].user_uuid);
 });
