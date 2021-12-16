@@ -97,3 +97,14 @@ test("log-in function teacher", async () => {
 		.send(data)
 		.expect("Location", "/logged-in/teachers/" + teacher_uuid[0].user_uuid);
 });
+
+test("posting code for students", async () => {
+	const code = await Code.query().select("code");
+	const data = { code: code[0].code};
+
+	return request(app)
+		.post("/post-code")
+		.set("Content-type", "application/json")
+		.send(data)
+		.expect("Location", "/code-ok");
+});

@@ -99,7 +99,6 @@ router.get("/login", access, (req, res) =>{
 router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
 	async function(req, res) {
 		const role = await Role.query().select("role").where({role_uuid: req.user.role_uuid});
-		console.log(req);
 		if(role[0].role === "STUDENT"){
 			res.redirect("/logged-in/students/"+ req.user.user_uuid);
 		}
