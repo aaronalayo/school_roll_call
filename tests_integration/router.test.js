@@ -20,12 +20,12 @@ const knex = Knex(connection.development);
 
 Model.knex(knex);
 
+app.use(express.urlencoded({ extended: false }));
+app.use(router);
+
 afterAll(() => {
 	knex.destroy();
 });
-
-app.use(express.urlencoded({ extended: false }));
-app.use(router);
 
 test("index route works", done => {
 	request(app)

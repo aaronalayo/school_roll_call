@@ -26,7 +26,6 @@ router.get("/login", async (req, res) => {
 			res.send("This school doesnt exits").redirect("/");
 		}else{
 			const result = checkIp(studentIp, school[0].school_ip);
-			console.log(result);
 			if(result == false){
 				res.send("You are not at school").redirect("/");
 			}else{

@@ -31,7 +31,7 @@ export async function seed(knex) {
 				.then(function () {
 					// Inserts seed entries
 					return knex("schools").insert([
-						{ school_name: "Kobenhavn E Academie", school_address: "Guldbergsgade 29N 2200 København N", school_ip: "80.208.65.80" }
+						{ school_name: "Kobenhavn E Academie", school_address: "Guldbergsgade 29N 2200 København N", school_ip: "185.107.15.194" }
 					]).returning("school_uuid")
 						.then(([school_uuid]) => {
 							return knex("departments").insert([
