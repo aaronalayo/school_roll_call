@@ -1,22 +1,19 @@
 "use strict";
 import express from "express";
-let router = express.Router();
 import session from "express-session";
-router.use(express.static("public"));
 import * as fs from "fs";
-
 import School from "../model/School.js";
 import Role from "../model/Role.js";
 import User from "../model/User.js";
-
 import getPublicIp from "../middleware/getPublicIp.js";
 // import checkIp from "../middleware/checkIp.js";
-
 import passport from "passport";
 import passportLocal from "passport-local";
-
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+
+router.use(express.static("public"));
+let router = express.Router();
 dotenv.config();
 
 import connection from "../../knexfile.js";

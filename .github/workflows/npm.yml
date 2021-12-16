@@ -44,7 +44,7 @@ jobs:
       - run: echo "DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable" > .env
       - run: npm install
       - run: npm run migrate:latest
-      - run: npm run seed:run
+      - run: npm run seed:ci
       - run: npm run integration-test
 
 
