@@ -10,7 +10,7 @@ class Code extends Model {
 		return {
 			persons: {
 				relation: Model.HasManyRelation,
-				modelClass: __dirname + "/Person.js",
+				modelClass: __dirname + "/People.js",
 				join: {
 					from: "persons.person_uuid",
 					to: "codes.code_uuid"

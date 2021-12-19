@@ -1,9 +1,11 @@
 import bcrypt from "bcrypt";
+import publicIp from "public-ip";
 const saltRounds = 12;
 
 export async function seed(knex) {
-	const hashedPassword = await bcrypt.hash("gambetta", saltRounds);
-	const hashedPassword2 = await bcrypt.hash("kea", saltRounds);
+	const hashedPassword = await bcrypt.hash("test", saltRounds);
+	const hashedPassword2 = await bcrypt.hash("test", saltRounds);
+	const publicIP = await publicIp.v4();
 	// Deletes ALL existing entries
 	return knex("users").del()
 		.then(function () {
@@ -32,31 +34,31 @@ export async function seed(knex) {
 				.then(function () {
 					// Inserts seed entries
 					return knex("schools").insert([
-						{ school_name: "Kobenhavn E Academie", school_address: "Guldbergsgade 29N 2200 København N", school_ip: "185.107.15.194" }
+						{ school_name: "Test-School", school_address: "Test-address", school_ip: publicIP }
 					]).returning("school_uuid")
 						.then(([school_uuid]) => {
 							return knex("departments").insert([
-								{ department_name: "IT", department_address: "Guldbergsgade 29N 2200 København N", school_uuid: school_uuid }
+								{ department_name: "Test-department", department_address: "Test-department-address", school_uuid: school_uuid }
 							]).returning("department_uuid")
 								.then(([department_uuid]) => {
 									return knex("programs").insert([
-										{ program_name: "Software Development", department_uuid: department_uuid }
+										{ program_name: "Test-program", department_uuid: department_uuid }
 									]).returning("program_uuid")
 										.then(([program_uuid]) => {
 											return knex("subjects").insert([
-												{ subject_name: "Database for developers", subject_description: "Working with multiple databases", program_uuid: program_uuid }
+												{ subject_name: "Test-subject", subject_description: "Test-description", program_uuid: program_uuid }
 											]);
 										}).then(function () {
 											return knex("people").insert([
-												{ person_full_name: "Aaron ALAYO", person_phone_number: "50571216", department_uuid:department_uuid },
-												{ person_full_name: "Carlos Santana", person_phone_number: "57141215", department_uuid:department_uuid },
+												{ person_full_name: "Test-people-fullname-student", person_phone_number: "Test-people-phonenumber-student", department_uuid:department_uuid },
+												{ person_full_name: "Test-people-fullname-teacher", person_phone_number: "Test-people-phonenumber-teacher", department_uuid:department_uuid },
 											]).returning("person_uuid")
 												.then(([person_uuid])  =>  {
 													return knex("roles").select().then(roles =>{
 														return knex("users").insert([  
-															{username: "aaro0186", password: hashedPassword, email: "aaro0186@stud.kea.dk", role_uuid: roles.find(role => role.role ==="STUDENT").role_uuid, 
+															{username: "Test-user-student", password: hashedPassword, email: "testUserStudent@test.dk", role_uuid: roles.find(role => role.role ==="STUDENT").role_uuid, 
 																person_uuid:person_uuid},
-															{username: "carlo0186", password: hashedPassword2, email: "carlo0186@teach.kea.dk", role_uuid: roles.find(role => role.role ==="TEACHER").role_uuid, 
+															{username: "Test-user-teacher", password: hashedPassword2, email: "testUserTeacher@test.dk", role_uuid: roles.find(role => role.role ==="TEACHER").role_uuid, 
 																person_uuid:person_uuid}     
 														]);
 													});

@@ -9,10 +9,12 @@
     "migrate:rollback": "knex migrate:rollback",
     "seed:make": "knex seed:make",
     "seed:run": "knex seed:run",
+    "seed:ci": "knex seed:run --specific ci_populate.js",
     "cleandb": "knex migrate:rollback && knex migrate:latest",
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "jest",
+    "unit-test": "jest --verbose ./tests_unit",
+    "integration-test": "jest --verbose ./tests_integration --forceExit",
     "lint": "eslint './**' ",
     "fix-syntax": "npx eslint './**' --fix"
   },
@@ -28,6 +30,7 @@
   },
   "homepage": "https://github.com/aaronalayo/kea_roll_call#readme",
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.5",
     "eslint": "^7.32.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-standard": "^16.0.3",
@@ -49,6 +52,7 @@
     "passport": "^0.5.0",
     "passport-local": "^1.0.0",
     "pg": "^8.7.1",
+    "popups": "^1.1.3",
     "public-ip": "^4.0.4",
     "supertest": "^6.1.6"
   }

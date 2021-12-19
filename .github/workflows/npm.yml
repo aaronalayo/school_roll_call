@@ -5,21 +5,51 @@ on: [push, pull_request]
 
 jobs:
 
-  syntax-check:
+  integration-tests:
+    # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     strategy:
-        matrix:
-          node-version: [12.x, 14.x, 16.x]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    # Docker Hub image that `container-job` executes in
+    container: node:10.18-jessie
 
-    
-    - run: npm install
-    - run: npm run lint
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST: localhost
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - uses: actions/checkout@v2
+      - name: Check out repository code
+        uses: actions/setup-node@v2
+        with: 
+          node-version: ${{ matrix.node-version }}
+          # The hostname used to communicate with the PostgreSQL service container
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      - run: echo "DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable\nSESSION_SECRET=ANPORAAA" > .env
+      - run: npm install
+      - run: npm run migrate:latest
+      - run: npm run seed:ci
+      - run: npm run integration-test
+
 
   build:
     runs-on: ubuntu-latest
@@ -40,7 +70,6 @@ jobs:
 
     - run: npm install
     - run: npm run build --if-present
-    - run: npm test
     
   unit-test:
     runs-on: ubuntu-latest
@@ -60,4 +89,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - run: npm install
-    - run: npm test
+    - run: npm run unit-test
+
+
