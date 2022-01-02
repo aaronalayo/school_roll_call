@@ -1,7 +1,6 @@
 "use strict";
 import express from "express";
 import session from "express-session";
-import * as fs from "fs";
 import School from "../model/School.js";
 import Role from "../model/Role.js";
 import User from "../model/User.js";
@@ -14,11 +13,7 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import connection from "../../knexfile.js";
 import Knex from "knex";
-
-const homePage = fs.readFileSync("./public/homepage.html", "utf8");
-const loginPage = fs.readFileSync("./public/loginpage.html", "utf8");
-const studentPage = fs.readFileSync("./public/studentpage.html", "utf8");
-const teacherPage = fs.readFileSync("./public/teacherpage.html", "utf8");
+import getUserCredentials from "../middleware/getUserCredentials.js"
 
 let router = express.Router();
 router.use(express.static("public"));
@@ -36,7 +31,6 @@ router.use(session({
 
 router.use(passport.initialize());
 router.use(passport.session());
-// import Role from "./app/model/Role.js";
 
 passport.serializeUser((user, done) => {
 	done(null, user.user_uuid);
@@ -66,7 +60,7 @@ passport.use(new LocalStrategy(
 					return done(null, user[0]);
 				}
 			});
-		}	
+		}
 	}
 ));
 
@@ -74,6 +68,12 @@ router.get("/", async (req, res) =>{
 	return res.send(homePage);
 });
 
+router.post('/login', async (req, res) => {
+	const email = req.body.email;
+	const pass = req.body.pass;
+	const credentials = await getUserCredentials(knex, email, pass)
+	return res.status(200).send(credentials);
+});
 
 
 async function access (req, res, next) {
@@ -92,48 +92,49 @@ async function access (req, res, next) {
 	}
 }
 
-router.get("/login", access, (req, res) =>{
-	res.send(loginPage);
-});
+// router.get("/login", access, (req, res) =>{
+// 	res.send(loginPage);
+// });
 
-router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
-	async function(req, res) {
-		const role = await Role.query().select("role").where({role_uuid: req.user.role_uuid});
-		if(role[0].role === "STUDENT"){
-			res.redirect("/logged-in/students/"+ req.user.user_uuid);
-		}
-		else if((role[0].role === "TEACHER")){
-			res.redirect("/logged-in/teachers/" + req.user.user_uuid);
-		}
-	});
+// router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
+// 	async function(req, res) {
+// 		const role = await Role.query().select("role").where({role_uuid: req.user.role_uuid});
+// 		if(role[0].role === "STUDENT"){
+// 			res.redirect("/logged-in/students/"+ req.user.user_uuid);
+// 		}
+// 		else if((role[0].role === "TEACHER")){
+// 			res.redirect("/logged-in/teachers/" + req.user.user_uuid);
+// 		}
+// 	});
 
+
+// router.get("/logged-in/teachers/:uuid", async (req, res) => {
+	
+// 	const code = await codeGenerator();
+// 	await knex("codes").insert({code: code, user_uuid: req.params.uuid});
+// 	res.send("<h1>Generated code: " + code.toString() + "</h1>");
+
+// });
+
+// router.get("/logged-in/students/:uuid", async (req, res) => {
+	// 	res.send(studentPage);
+	// });
+	
+	// router.post("/post-code", async (req, res) => {
+		// 	const isOK = await Code.query().select("code").where({code: req.body.code});
+		// 	if (isOK.length === 0){
+			// 		res.redirect("/incorrect-code");
+			// 	}else {
+				// 		res.redirect("/code-ok");
+				// 	}
+				// });
+				
+				// router.get("/incorrect-code", (req, res) => {
+					// 	res.send("Incorrect Code");
+					// });
+					
+					// router.get("/code-ok", (req, res) => {
+						// 	res.send("You are checked in!");
+						// });
+						// 
 export { router };
-
-router.get("/logged-in/teachers/:uuid", async (req, res) => {
-
-	const code = await codeGenerator();
-	await knex("codes").insert({code: code, user_uuid: req.params.uuid});
-	res.send("<h1>Generated code: " + code.toString() + "</h1>");
-
-});
-
-router.get("/logged-in/students/:uuid", async (req, res) => {
-	res.send(studentPage);
-});
-
-router.post("/post-code", async (req, res) => {
-	const isOK = await Code.query().select("code").where({code: req.body.code});
-	if (isOK.length === 0){
-		res.redirect("/incorrect-code");
-	}else {
-		res.redirect("/code-ok");
-	}
-});
-
-router.get("/incorrect-code", (req, res) => {
-	res.send("Incorrect Code");
-});
-
-router.get("/code-ok", (req, res) => {
-	res.send("You are checked in!");
-});

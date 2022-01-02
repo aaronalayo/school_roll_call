@@ -81,7 +81,9 @@ export async function up(knex) {
 				.primary()
 				.notNullable()
 				.defaultTo(knex.raw("uuid_generate_v4()"));
-			table.string("person_full_name").notNullable();
+			table.string("person_subjects").notNullable()
+			table.string("person_first_name").notNullable();
+			table.string("person_last_name").notNullable();
 			table.string("person_phone_number").notNullable();
 			table.uuid("department_uuid");
 			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
