@@ -65,13 +65,14 @@ passport.use(new LocalStrategy(
 ));
 
 router.get("/", async (req, res) =>{
-	return res.send(homePage);
 });
 
 router.post('/login', async (req, res) => {
 	const email = req.body.email;
-	const pass = req.body.pass;
-	const credentials = await getUserCredentials(knex, email, pass)
+	console.log(req.ip);
+	const user = await User.query().select().where({ email: email })
+	const credentials = await getUserCredentials(knex, user)
+
 	return res.status(200).send(credentials);
 });
 
