@@ -69,11 +69,19 @@ router.get("/", async (req, res) =>{
 
 router.post('/login', async (req, res) => {
 	const email = req.body.email;
-	console.log(req.ip);
-	const user = await User.query().select().where({ email: email })
-	const credentials = await getUserCredentials(knex, user)
+	// console.log(req.ip);
 
-	return res.status(200).send(credentials);
+	const user = await User.query().select().where({ email: email });
+
+	if (user.length !== 0){
+		if (bcrypt.compareSync(req.body.password, user[0].password)){
+			const credentials = await getUserCredentials(knex, user);
+			return res.status(200).send(credentials);
+		}
+	}
+
+	return res.status(401).send( { "error": "Incorrect email address or password, please try again" } );
+	
 });
 
 

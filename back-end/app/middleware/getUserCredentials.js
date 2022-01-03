@@ -3,19 +3,10 @@ import Role from "../model/Role.js"
 import People from "../model/People.js"
 import Subject from "../model/Subject.js" 
 import Program from "../model/Program.js"
-import bcrypt from "bcrypt"
 
 export default async function getUserCredentials(knex, user) {
     
-    if(user.length === 0){
-        return {"error": "Incorrect email address or password, please try again" };
-    }
-    
     const subjects = []  
-
-    // isPassCorrect = bcrypt.compare(pass, user[0].password, (err, res) => {
-    //     return res;
-    // });
 
     const role = await Role.query().select("role").where({role_uuid: user[0].role_uuid});
     const person = await People.query().select().where({person_uuid: user[0].person_uuid});
