@@ -14,6 +14,7 @@ import dotenv from "dotenv";
 import connection from "../../knexfile.js";
 import Knex from "knex";
 import getUserCredentials from "../middleware/getUserCredentials.js"
+import getUserSubjects from "../middleware/getUserSubjects.js";
 
 let router = express.Router();
 router.use(express.static("public"));
@@ -29,49 +30,15 @@ router.use(session({
 	saveUninitialized: false}
 ));
 
-router.use(passport.initialize());
-router.use(passport.session());
-
-passport.serializeUser((user, done) => {
-	done(null, user.user_uuid);
-});
-
-passport.deserializeUser((user_uuid, done) => {
-	knex("users").where({user_uuid}).first()
-		.then((user) => { done(null, user); })
-		.catch((err) => { done(err,null); });
-});
-
-
-passport.use(new LocalStrategy(
-	async function (username, password, done) {
-		// console.log(username, password);
-		if(username.length === 0 || password.length === 0){
-			return done(null, false, { message: "Incorrect username and/or password." });
-		}else {
-			const user = await User.query().select().where({ username: username });
-			if (!user.length){			
-				return done(null, false, { message: "Incorrect username and/or password." });
-			}
-			bcrypt.compare(password, user[0].password, function (err, result) {
-				if (!user || result == false) {
-					return done(null, false, { message: "Incorrect username and/or password." });
-				} else {
-					return done(null, user[0]);
-				}
-			});
-		}
-	}
-));
-
-router.get("/", async (req, res) =>{
+router.get("/", async (req, res) => {
+	console.log(req.ip);
+	return res.status(200).send("Hi User");
 });
 
 router.post('/login', async (req, res) => {
 	const email = req.body.email;
-	// console.log(req.ip);
-
 	const user = await User.query().select().where({ email: email });
+	console.log(user[0].user_uuid);
 
 	if (user.length !== 0){
 		if (bcrypt.compareSync(req.body.password, user[0].password)){
@@ -79,27 +46,19 @@ router.post('/login', async (req, res) => {
 			return res.status(200).send(credentials);
 		}
 	}
-
 	return res.status(401).send( { "error": "Incorrect email address or password, please try again" } );
 	
 });
 
+router.get("/subjects/:userID", async (req, res) => {
+	const user = await User.query().select().where({user_uuid: req.params.userID});
 
-async function access (req, res, next) {
-	const studentIp = await getPublicIp();
-	// console.log(studentIp);
-	if(!studentIp || studentIp === undefined || studentIp.length === 0 ){
-		res.send("There is no internet connection");
-	}else{
-		const school = await School.query().select().where({school_ip: studentIp});
-		// console.log(school.length);
-		if(!school || school === undefined || school.length === 0 ){
-			res.send("No school found");
-		}else {
-			next();
-		}
+	if (user.lenght !== 0){
+		const subjects = await getUserSubjects(knex, user)
+
+		return res.status(200).send(subjects);
 	}
-}
+});
 
 // router.get("/login", access, (req, res) =>{
 // 	res.send(loginPage);
