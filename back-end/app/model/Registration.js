@@ -1,5 +1,5 @@
 import objection from "objection";
-import Person from "./Person.js";
+import Person from "./People.js";
 const { Model } = objection;
 
 class Registration extends Model {

@@ -52,9 +52,7 @@ export async function seed(knex) {
 										}).then(function () {
 											return knex("subjects").select().then(subjects => {
 												return knex("people").insert([
-													{ person_first_name: "Test-people-firstname-student", person_last_name: "Test-people-lastname-student", person_phone_number: "Test-people-phonenumber-student", department_uuid: department_uuid, 
-													person_subjects: [subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid, 
-													subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid] }
+													{ person_first_name: "Test-people-firstname-student", person_last_name: "Test-people-lastname-student", person_phone_number: "Test-people-phonenumber-student", department_uuid: department_uuid }
 												]).returning("person_uuid")
 													.then(([person_uuid]) => {
 															return knex("registrations").insert([
@@ -72,7 +70,7 @@ export async function seed(knex) {
 										}).then(function () {
 											return knex("subjects").select().then(subjects => {
 												return knex("people").insert([
-													{ person_first_name: "Test-people-firstname-teacher", person_last_name: "Test-people-lastname-teacher", person_phone_number: "Test-people-phonenumber-teacher", department_uuid: department_uuid, person_subjects: [subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid, subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid] }
+													{ person_first_name: "Test-people-firstname-teacher", person_last_name: "Test-people-lastname-teacher", person_phone_number: "Test-people-phonenumber-teacher", department_uuid: department_uuid }
 												]).returning("person_uuid")
 												.then(([person_uuid]) => {
 													return knex("registrations").insert([

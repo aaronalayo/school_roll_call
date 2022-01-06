@@ -1,14 +1,10 @@
 "use strict";
 import express from "express";
 import session from "express-session";
-import School from "../model/School.js";
 import Role from "../model/Role.js";
 import User from "../model/User.js";
 import Code from "../model/Code.js";
-import Subject from "../model/Subject.js";
 import People from "../model/People.js"
-import getPublicIp from "../middleware/getPublicIp.js";
-import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -39,27 +35,36 @@ router.get("/", async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-	const email = req.body.email;
-	const user = await User.query().select().where({ email: email });
-	console.log(user[0].user_uuid);
-
-	if (user.length !== 0){
-		if (bcrypt.compareSync(req.body.password, user[0].password)){
-			const credentials = await getUserCredentials(knex, user);
-			return res.status(200).send(credentials);
+	try {
+		const email = req.body.email;
+		const user = await User.query().select().where({ email: email });
+	
+		if (user.length !== 0){
+			if (bcrypt.compareSync(req.body.password, user[0].password)){
+				const credentials = await getUserCredentials(knex, user);
+				return res.status(200).send(credentials);
+			}
 		}
+		return res.status(401).send( { "error": "Incorrect email address or password, please try again" } );	
+	} catch (error) {
+		console.log(error);
+		return res.status(501).send({  "error": "An unexpected error has occurred, please try again later" });
 	}
-	return res.status(401).send( { "error": "Incorrect email address or password, please try again" } );
 	
 });
 
 router.get("/subjects/:userID", async (req, res) => {
 	const user = await User.query().select().where({user_uuid: req.params.userID});
-
-	if (user.lenght !== 0){
-		const subjects = await getUserSubjects(knex, user)
-
-		return res.status(200).send(subjects);
+	try {
+		if (user.length !== 0){
+			const subjects = await getUserSubjects(knex, user);
+			return res.status(200).send(subjects);
+		} else {
+			return res.status(401).send({"error": "The user specified does not exist"});
+		}
+	} catch (error) {
+		console.log(error);
+		return res.status(501).send({"error": "An unexpected error has occurred, please try again later"})
 	}
 });
 
@@ -88,22 +93,22 @@ router.post("/generate", async (req, res) => {
 	}
 	});
 
-	router.post("/check", async (req, res) => {
-		const {userId, code} = req.body;
-		console.log(userId, code)
-		const subjects = [];
-		if(userId){
-			const userStudent = await User.query().select().where({user_uuid: userId});
-			const personStudent = await People.query().select().where({person_uuid:userStudent[0].person_uuid});
-			
-			const dbcode = await Code.query().select().where({code: code});
-			console.log(dbcode)
-			// const subject = await Subject.query().select().where({subject_uuid: subjectId}).withGraphFetched("programs");
-
-			
+router.post("/check", async (req, res) => {
+	const {userId, code} = req.body;
+	console.log(userId, code)
+	const subjects = [];
+	if(userId){
+		const userStudent = await User.query().select().where({user_uuid: userId});
+		const personStudent = await People.query().select().where({person_uuid:userStudent[0].person_uuid});
 		
-		}
-	});
+		const dbcode = await Code.query().select().where({code: code});
+		console.log(dbcode)
+		// const subject = await Subject.query().select().where({subject_uuid: subjectId}).withGraphFetched("programs");
+
+		
+	
+	}
+});
 // router.get("/login", access, (req, res) =>{
 // 	res.send(loginPage);
 // });
