@@ -149,10 +149,9 @@ export async function up(knex) {
 				.defaultTo(knex.raw("uuid_generate_v4()"));
 			table.string("code").notNullable();
 			table.uuid("user_uuid");
-			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
-			table.timestamp("updated_at").notNullable().defaultTo(knex.raw('now()'));
-			table.timestamp("expires_at")
-				.defaultTo(knex.raw("? + INTERVAL '? minute'", [knex.fn.now(), 60]));
+			table.timestamp("created_at").notNullable().defaultTo(knex.raw(`? + INTERVAL '? hour'`, [knex.fn.now(), 1]));
+			table.timestamp("updated_at").notNullable().defaultTo(knex.raw(`? + INTERVAL '? hour'`, [knex.fn.now(), 1]));
+			table.timestamp("expires_at").defaultTo(null);
 			table.foreign("user_uuid").references("users.user_uuid");
 			table.index(["code_uuid"], "index_code");
 		});

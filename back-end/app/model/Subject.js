@@ -1,6 +1,6 @@
 import objection from "objection";
 const { Model } = objection;
-
+import Program from "../model/Program.js"
 class Subject extends Model {
 	static get tableName () {
 		return "subjects";
@@ -9,11 +9,11 @@ class Subject extends Model {
 	static get relationMappings () {
 		return {
 			programs: {
-				relation: Model.HasManyRelation,
-				modelClass: __dirname + "/Program.js",
+				relation: Model.HasOneRelation,
+				modelClass: Program,
 				join: {
 					from: "programs.program_uuid",
-					to: "subjects.subject_uuid"
+					to: "subjects.program_uuid"
 				}
 			}
 		};

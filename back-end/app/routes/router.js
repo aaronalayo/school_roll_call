@@ -5,8 +5,9 @@ import School from "../model/School.js";
 import Role from "../model/Role.js";
 import User from "../model/User.js";
 import Code from "../model/Code.js";
+import Subject from "../model/Subject.js";
+import People from "../model/People.js"
 import getPublicIp from "../middleware/getPublicIp.js";
-import codeGenerator from "../middleware/codeGenerator.js";
 import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcrypt";
@@ -14,6 +15,8 @@ import dotenv from "dotenv";
 import connection from "../../knexfile.js";
 import Knex from "knex";
 import getUserCredentials from "../middleware/getUserCredentials.js"
+import getGenerateInfo from "../middleware/getGenerateInfo.js"
+
 
 let router = express.Router();
 router.use(express.static("public"));
@@ -101,6 +104,47 @@ async function access (req, res, next) {
 	}
 }
 
+router.post("/generate", async (req, res) => {
+	const { userId, expirationTime, subjectId } = req.body;
+	// console.log(req.body)
+	if (userId === "" || subjectId === "" || expirationTime.length === "") {
+		return res.status(500).send({ "error": "An unexpected error has occurred, please try again later" });
+	}else if (userId, subjectId, expirationTime) {
+		const user = await User.query().select().where({ user_uuid: userId });
+		console.log(user.length)
+		if (user.length == 0) {
+			return res.status(500).send({ "error": "An unexpected error has occurred, please try again later" });
+		}else if (user){
+			const role = await Role.query().select("role").where({ role_uuid: user[0].role_uuid });
+			if (role[0].role === "TEACHER") {
+				const generatedInfo = await getGenerateInfo(subjectId, user[0].user_uuid, expirationTime);
+				console.log(generatedInfo)
+				return res.status(200).send(generatedInfo)
+			} else {
+				return res.status(500).send({ "error": "An unexpected error has occurred, please try again later" });
+			}
+		}
+	} else {
+		return res.status(500).send({ "error": "An unexpected error has occurred, please try again later" });
+	}
+	});
+
+	router.post("/check", async (req, res) => {
+		const {userId, code} = req.body;
+		console.log(userId, code)
+		const subjects = [];
+		if(userId){
+			const userStudent = await User.query().select().where({user_uuid: userId});
+			const personStudent = await People.query().select().where({person_uuid:userStudent[0].person_uuid});
+			
+			const dbcode = await Code.query().select().where({code: code});
+			console.log(dbcode)
+			// const subject = await Subject.query().select().where({subject_uuid: subjectId}).withGraphFetched("programs");
+
+			
+		
+		}
+	});
 // router.get("/login", access, (req, res) =>{
 // 	res.send(loginPage);
 // });
