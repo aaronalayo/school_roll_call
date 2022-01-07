@@ -4,7 +4,6 @@ import session from "express-session";
 import Role from "../model/Role.js";
 import User from "../model/User.js";
 import Code from "../model/Code.js";
-import People from "../model/People.js"
 import passportLocal from "passport-local";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -14,6 +13,8 @@ import getUserCredentials from "../middleware/getUserCredentials.js"
 import getGenerateInfo from "../middleware/getGenerateInfo.js"
 
 import getUserSubjects from "../middleware/getUserSubjects.js";
+import getCodeOwner from "../middleware/updateAttendance.js";
+import updateAttendance from "../middleware/updateAttendance.js";
 
 let router = express.Router();
 router.use(express.static("public"));
@@ -94,64 +95,24 @@ router.post("/generate", async (req, res) => {
 	});
 
 router.post("/check", async (req, res) => {
-	const {userId, code} = req.body;
-	console.log(userId, code)
-	const subjects = [];
-	if(userId){
+	try {
+		const {userId, code} = req.body;
 		const userStudent = await User.query().select().where({user_uuid: userId});
-		const personStudent = await People.query().select().where({person_uuid:userStudent[0].person_uuid});
-		
-		const dbcode = await Code.query().select().where({code: code});
-		console.log(dbcode)
-		// const subject = await Subject.query().select().where({subject_uuid: subjectId}).withGraphFetched("programs");
-
-		
+		const codeDB = await Code.query().select().where({code: code});
 	
+		if (codeDB.length === 0){
+			return res.status(401).send({"error": "The code is incorrect"});
+		}
+	
+		const result = await updateAttendance(knex, codeDB, userStudent );
+		return res.status(200).send(result);
+		
+	} catch (error) {
+		return res.status(501).send({
+			"error": "An unexpected error has occurred, please try again later" 
+		});
 	}
+
 });
-// router.get("/login", access, (req, res) =>{
-// 	res.send(loginPage);
-// });
 
-// router.post("/login", passport.authenticate("local", { failureRedirect: "/login" }),
-// 	async function(req, res) {
-// 		const role = await Role.query().select("role").where({role_uuid: req.user.role_uuid});
-// 		if(role[0].role === "STUDENT"){
-// 			res.redirect("/logged-in/students/"+ req.user.user_uuid);
-// 		}
-// 		else if((role[0].role === "TEACHER")){
-// 			res.redirect("/logged-in/teachers/" + req.user.user_uuid);
-// 		}
-// 	});
-
-
-// router.get("/logged-in/teachers/:uuid", async (req, res) => {
-	
-// 	const code = await codeGenerator();
-// 	await knex("codes").insert({code: code, user_uuid: req.params.uuid});
-// 	res.send("<h1>Generated code: " + code.toString() + "</h1>");
-
-// });
-
-// router.get("/logged-in/students/:uuid", async (req, res) => {
-	// 	res.send(studentPage);
-	// });
-	
-	// router.post("/post-code", async (req, res) => {
-		// 	const isOK = await Code.query().select("code").where({code: req.body.code});
-		// 	if (isOK.length === 0){
-			// 		res.redirect("/incorrect-code");
-			// 	}else {
-				// 		res.redirect("/code-ok");
-				// 	}
-				// });
-				
-				// router.get("/incorrect-code", (req, res) => {
-					// 	res.send("Incorrect Code");
-					// });
-					
-					// router.get("/code-ok", (req, res) => {
-						// 	res.send("You are checked in!");
-						// });
-						// 
 export { router };

@@ -131,7 +131,8 @@ export async function up(knex) {
 			table
 				.uuid("attendance_uuid")
 				.primary()
-				.notNullable();
+				.notNullable()
+				.defaultTo(knex.raw("uuid_generate_v4()"));
 			table.uuid("user_uuid");
 			table.uuid("subject_uuid");
 			table.timestamp("created_at").notNullable().defaultTo(knex.raw('now()'));
@@ -147,11 +148,11 @@ export async function up(knex) {
 				.notNullable()
 				.defaultTo(knex.raw("uuid_generate_v4()"));
 			table.string("code").notNullable();
-			table.uuid("user_uuid");
+			table.uuid("subject_uuid");
 			table.timestamp("created_at").notNullable().defaultTo(knex.raw(`? + INTERVAL '? hour'`, [knex.fn.now(), 1]));
 			table.timestamp("updated_at").notNullable().defaultTo(knex.raw(`? + INTERVAL '? hour'`, [knex.fn.now(), 1]));
 			table.timestamp("expires_at").defaultTo(null);
-			table.foreign("user_uuid").references("users.user_uuid");
+			table.foreign("subject_uuid").references("subjects.subject_uuid");
 			table.index(["code_uuid"], "index_code");
 		});
 }

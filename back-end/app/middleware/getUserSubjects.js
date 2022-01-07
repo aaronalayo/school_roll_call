@@ -1,6 +1,5 @@
 import Registration from "../model/Registration.js"
 import Subject from "../model/Subject.js" 
-import Program from "../model/Program.js"
 
 export default async function getUserSubjects(knex, user){
 

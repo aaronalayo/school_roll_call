@@ -16,7 +16,7 @@ export default async function getGenerateInfo(subjectId, userId, expirationTime)
     let duration = expTime - date
     duration = Math.round(duration / 1000)
     expTime = moment((new Date(expTime).toISOString())).add(1,'hours');
-    await Code.query().insert({code: code, user_uuid: userId, expires_at: expTime});
+    await Code.query().insert({code: code, subject_uuid: subject[0].subject_uuid, expires_at: expTime});
 	
     const generatedInfo = {
         "subjectName": subject[0].subject_name,
