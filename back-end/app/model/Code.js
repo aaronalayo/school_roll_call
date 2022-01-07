@@ -1,4 +1,5 @@
 import objection from "objection";
+import Person from "./People.js";
 const { Model } = objection;
 
 class Code extends Model {
@@ -8,11 +9,11 @@ class Code extends Model {
 
 	static get relationMappings () {
 		return {
-			persons: {
+			people: {
 				relation: Model.HasManyRelation,
-				modelClass: __dirname + "/People.js",
+				modelClass: Person,
 				join: {
-					from: "persons.person_uuid",
+					from: "people.person_uuid",
 					to: "codes.code_uuid"
 				}
 			}
