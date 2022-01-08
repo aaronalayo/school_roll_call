@@ -15,6 +15,11 @@ app.use(express.static("public"));
 
 
 
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
+app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
+
 dotenv.config();
 
 // Setup Objection + Knex
