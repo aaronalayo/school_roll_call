@@ -53,8 +53,8 @@ router.post('/login', async (req, res) => {
 });
 
 router.get("/subjects/:userID", async (req, res) => {
-	const user = await User.query().select().where({user_uuid: req.params.userID});
 	try {
+		const user = await User.query().select().where({user_uuid: req.params.userID});
 		if (user.length !== 0){
 			const subjects = await getUserSubjects(knex, user);
 			return res.status(200).send(subjects);
