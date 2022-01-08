@@ -44,7 +44,7 @@ jobs:
           # The hostname used to communicate with the PostgreSQL service container
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
-      - run: echo "DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disabled\nSESSION_SECRET=ANPORAAA" > .env
+      - run: echo "DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable\nSESSION_SECRET=ANPORAAA" > .env
       - run: npm install
       - run: npm run migrate:latest
       - run: npm run seed:ci
