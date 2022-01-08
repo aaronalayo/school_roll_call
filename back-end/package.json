@@ -14,7 +14,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "unit-test": "jest --verbose ./tests_unit",
-    "integration-test": "jest --verbose ./tests_integration",
+    "integration-test": "jest --verbose ./tests_integration --forceExit",
     "lint": "eslint './**' ",
     "fix-syntax": "npx eslint './**' --fix"
   },
