@@ -1,9 +1,5 @@
 import objection from "objection";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import Subject from "../model/Subject.js";
 const { Model } = objection;
 
 class Attendance extends Model {
@@ -15,7 +11,7 @@ class Attendance extends Model {
 		return {
 			subjects: {
 				relation: Model.HasManyRelation,
-				modelClass: __dirname + "/Subject.js",
+				modelClass: Subject,
 				join: {
 					from: "subjects.subject_uuid",
 					to: "attendances.attendance_uuid"

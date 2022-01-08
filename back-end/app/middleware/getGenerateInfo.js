@@ -1,10 +1,8 @@
-import User from "../model/User.js"
-import Role from "../model/Role.js"
+
 import Subject from "../model/Subject.js" 
-import Program from "../model/Program.js"
 import Code from "../model/Code.js"
 import codeGenerator from "./codeGenerator.js"
-import moment from "moment";
+
 
 export default async function getGenerateInfo(subjectId, userId, expirationTime) {
     const subject = await Subject.query().select().where({subject_uuid: subjectId}).withGraphFetched("programs");
@@ -24,7 +22,6 @@ export default async function getGenerateInfo(subjectId, userId, expirationTime)
     }
      return generatedInfo   
 
-    
 }
 
 

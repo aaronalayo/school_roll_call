@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./app
+        working-directory: ./back-end
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
@@ -87,8 +87,9 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-
+    working-directory: ./back-end
     - run: npm install
+    working-directory: ./back-end
     - run: npm run unit-test
 
 
