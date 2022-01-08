@@ -14,11 +14,15 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
-
-app.use(helmet.permittedCrossDomainPolicies());
-app.use(helmet.referrerPolicy());
-app.use(helmet.xssFilter());
-app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
+app.all('*', function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+	res.header(
+	  'Access-Control-Allow-Headers',
+	  'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+	);
+	next();
+  });
 
 dotenv.config();
 
