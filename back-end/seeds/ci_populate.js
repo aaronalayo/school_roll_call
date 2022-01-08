@@ -34,35 +34,35 @@ export async function seed(knex) {
 				.then(function () {
 					// Inserts seed entries
 					return knex("schools").insert([
-						{ school_name: "Test-School", school_address: "Test-address", school_ip: publicIP }
+						{ school_name: "KØBENHAVNS ERHVERVSAKADEMI", school_address: "Guldbergsgade 29N 2200 København N", school_ip: publicIP }
 					]).returning("school_uuid")
 						.then(([school_uuid]) => {
 							return knex("departments").insert([
-								{ department_name: "Test-department", department_address: "Test-department-address", school_uuid: school_uuid }
+								{ department_name: "IT-department", department_address: "Guldbergsgade 29N 2200 København N", school_uuid: school_uuid }
 							]).returning("department_uuid")
 								.then(([department_uuid]) => {
 									return knex("programs").insert([
-										{ program_name: "Test-program", department_uuid: department_uuid }
+										{ program_name: "SOFTWARE DEVELOPMENT", department_uuid: department_uuid }
 									]).returning("program_uuid")
 										.then(([program_uuid]) => {
 											return knex("subjects").insert([
-												{ subject_name: "Test-subject1", subject_description: "Test-description", program_uuid: program_uuid },
-												{ subject_name: "Test-subject2", subject_description: "Test-description", program_uuid: program_uuid }
+												{ subject_name: "Development Large Systems", subject_description: "Desing large software systems", program_uuid: program_uuid },
+												{ subject_name: "Software Testing", subject_description: "Fundamentals of testing", program_uuid: program_uuid }
 											])
 										}).then(function () {
 											return knex("subjects").select().then(subjects => {
 												return knex("people").insert([
-													{ person_first_name: "Test-people-firstname-student", person_last_name: "Test-people-lastname-student", person_phone_number: "Test-people-phonenumber-student", department_uuid: department_uuid }
+													{ person_first_name: "John", person_last_name: "Testerman", person_phone_number: "50574745", department_uuid: department_uuid }
 												]).returning("person_uuid")
 													.then(([person_uuid]) => {
 															return knex("registrations").insert([
-																{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid},
-																{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid}
+																{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Development Large Systems").subject_uuid},
+																{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Software Testing").subject_uuid}
 															]).returning("person_uuid")
 														}).then(([person_uuid]) => {
 														return knex("roles").select().then(roles => {
 															return knex("users").insert([
-																{ username: "Test-user-student", password: hashedPassword, email: "testUserStudent@test.dk", role_uuid: roles.find(role => role.role === "STUDENT").role_uuid, person_uuid: person_uuid }
+																{ username: "john0186", password: hashedPassword, email: "john0186@stud.kea.dk", role_uuid: roles.find(role => role.role === "STUDENT").role_uuid, person_uuid: person_uuid }
 															]);
 														})
 													})
@@ -70,17 +70,17 @@ export async function seed(knex) {
 										}).then(function () {
 											return knex("subjects").select().then(subjects => {
 												return knex("people").insert([
-													{ person_first_name: "Test-people-firstname-teacher", person_last_name: "Test-people-lastname-teacher", person_phone_number: "Test-people-phonenumber-teacher", department_uuid: department_uuid }
+													{ person_first_name: "William", person_last_name: "Hurt", person_phone_number: "27252415", department_uuid: department_uuid }
 												]).returning("person_uuid")
 												.then(([person_uuid]) => {
 													return knex("registrations").insert([
-														{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid},
-														{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid}
+														{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Development Large Systems").subject_uuid},
+														{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Software Testing").subject_uuid}
 													]).returning("person_uuid")
 												}).then(([person_uuid]) => {
 														return knex("roles").select().then(roles => {
 															return knex("users").insert([
-																{ username: "Test-user-teacher", password: hashedPassword2, email: "testUserTeacher@test.dk", role_uuid: roles.find(role => role.role === "TEACHER").role_uuid, person_uuid: person_uuid }
+																{ username: "will0185", password: hashedPassword2, email: "will0185@teach.kea.dk", role_uuid: roles.find(role => role.role === "TEACHER").role_uuid, person_uuid: person_uuid }
 															]);
 														})
 
@@ -94,3 +94,4 @@ export async function seed(knex) {
 		});
 
 }
+

@@ -12,7 +12,13 @@ const server = http.createServer(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
+import helmet from "helmet";
 
+
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
+app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 
 dotenv.config();
 
