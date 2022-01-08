@@ -8,6 +8,9 @@ jobs:
   integration-tests:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./back-end
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
@@ -55,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./app
+        working-directory: ./back-end
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
