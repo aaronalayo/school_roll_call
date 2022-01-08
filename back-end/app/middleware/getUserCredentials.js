@@ -12,7 +12,7 @@ export default async function getUserCredentials(knex, user) {
     const credentials = {
         "userRole": role[0].role,
         "userDetails": {
-            "id": person[0].person_uuid,
+            "id": user[0].user_uuid,
             "firstName": person[0].person_first_name,
             "lastName": person[0].person_last_name,
             "phoneNumber": person[0].person_phone_number,
