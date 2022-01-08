@@ -5,7 +5,7 @@ import connection from "./knexfile.js";
 import objection from "objection";
 import Knex from "knex";
 import { router } from "./app/routes/router.js";
-import helmet from "helmet";
+import * as helmet from "helmet";
 
 const app = express();
 const server = http.createServer(app);
