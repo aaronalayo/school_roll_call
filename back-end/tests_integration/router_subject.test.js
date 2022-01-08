@@ -21,32 +21,33 @@ app.use(express.urlencoded({ extended: false }));
 app.use(router);
 
 afterAll(() => {
-    knex.destroy();
+	knex.destroy();
 });
 
-describe('Subjects Get Correct userID', () => {
-    it('should return expected json object', async () => {
-    const test_user = await User.query().select().where({email: "testUserStudent@test.dk"})
-    const expected_response = await getUserSubjects(knex, test_user);
+describe("Subjects Get Correct userID", () => {
+	it("should return expected json object", async () => {
+		const test_user = await User.query().select().where({email: "john0186@stud.kea.dk"});
+		const expected_response = await getUserSubjects(knex, test_user);
 
-    const res = await request(app)
-      .get('/subjects/' + test_user[0].user_uuid);
+		const res = await request(app)
+			.get("/subjects/" + test_user[0].user_uuid);
 
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toStrictEqual(expected_response);
-  });
+		expect(res.statusCode).toEqual(200);
+		expect(res.body).toStrictEqual(expected_response);
+	});
   
 });
 
-describe('Subjects Get Correct incorrect userID', () => {
-    it('should return expected error', async () => {
+describe("Subjects Get Correct incorrect userID", () => {
+	it("should return expected error", async () => {
 
-    const expected_response = {"error": "The user specified does not exist"};
+		const expected_response = {"error": "The user specified does not exist"};
 
-    const res = await request(app)
-      .get('/subjects/ac6d5779-8273-4b23-aa3e-e5467ed936dd');
-    expect(res.statusCode).toEqual(401);
-    expect(res.body).toStrictEqual(expected_response);
-  });
+		const res = await request(app)
+
+			.get("/subjects/5a5512e4-347a-42c0-91f0-1bea99501233");//ac6d5779-8273-4b23-aa3e-e5467ed936dd
+		expect(res.statusCode).toEqual(401);
+		expect(res.body).toStrictEqual(expected_response);
+	});
   
 });

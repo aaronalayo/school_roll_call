@@ -9,8 +9,8 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import connection from "../../knexfile.js";
 import Knex from "knex";
-import getUserCredentials from "../middleware/getUserCredentials.js"
-import getGenerateInfo from "../middleware/getGenerateInfo.js"
+import getUserCredentials from "../middleware/getUserCredentials.js";
+import getGenerateInfo from "../middleware/getGenerateInfo.js";
 import getUserSubjects from "../middleware/getUserSubjects.js";
 import updateAttendance from "../middleware/updateAttendance.js";
 
@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
 	return res.status(200).send("Hi User");
 });
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
 	try {
 		const email = req.body.email;
 		const user = await User.query().select().where({ email: email });
@@ -63,7 +63,7 @@ router.get("/subjects/:userID", async (req, res) => {
 		}
 	} catch (error) {
 		// console.log(error);
-		return res.status(501).send({"error": "An unexpected error has occurred, please try again later"})
+		return res.status(501).send({"error": "An unexpected error has occurred, please try again later"});
 	}
 });
 
@@ -82,7 +82,7 @@ router.post("/generate", async (req, res) => {
 			if (role[0].role === "TEACHER") {
 				const generatedInfo = await getGenerateInfo(subjectId, user[0].user_uuid, expirationTime);
 				// console.log(generatedInfo)
-				return res.status(200).send(generatedInfo)
+				return res.status(200).send(generatedInfo);
 			} else {
 				return res.status(500).send({ "error": "An unexpected error has occurred, please try again later" });
 			}
@@ -90,7 +90,7 @@ router.post("/generate", async (req, res) => {
 	} else {
 		return res.status(500).send({ "error": "An unexpected error has occurred, please try again later" });
 	}
-	});
+});
 
 router.post("/check", async (req, res) => {
 	try {

@@ -1,7 +1,7 @@
 import objection from "objection";
 const { Model } = objection;
 import Deparment from "../model/Department.js";
-import Subject from "../model/Subject.js" 
+import Subject from "../model/Subject.js"; 
 class Program extends Model {
 	static get tableName () {
 		return "programs";

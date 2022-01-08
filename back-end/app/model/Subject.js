@@ -1,6 +1,6 @@
 import objection from "objection";
 const { Model } = objection;
-import Program from "../model/Program.js"
+import Program from "../model/Program.js";
 class Subject extends Model {
 	static get tableName () {
 		return "subjects";
