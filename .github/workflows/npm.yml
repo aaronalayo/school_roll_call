@@ -89,7 +89,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     working-directory: ./back-end
     - run: npm install
-    working-directory: ./back-end
     - run: npm run unit-test
 
 
