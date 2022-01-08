@@ -33,7 +33,9 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
     steps:
       # Downloads a copy of the code in your repository before running CI tests
       - uses: actions/checkout@v2
