@@ -47,7 +47,8 @@ export async function seed(knex) {
 										.then(([program_uuid]) => {
 											return knex("subjects").insert([
 												{ subject_name: "Development Large Systems", subject_description: "Desing large software systems", program_uuid: program_uuid },
-												{ subject_name: "Software Testing", subject_description: "Fundamentals of testing", program_uuid: program_uuid }
+												{ subject_name: "Software Testing", subject_description: "Fundamentals of testing", program_uuid: program_uuid },
+												{ subject_name: "Database for Developers", subject_description: "Desing good databases", program_uuid: program_uuid }
 											]);
 										}).then(function () {
 											return knex("subjects").select().then(subjects => {
@@ -87,6 +88,23 @@ export async function seed(knex) {
 													});
 											});
 
+										}).then(function () {
+											return knex("subjects").select().then(subjects => {
+												return knex("people").insert([
+													{ person_first_name: "Jack", person_last_name: "Rippers", person_phone_number: "64121514", department_uuid: department_uuid }
+												]).returning("person_uuid")
+													.then(([person_uuid]) => {
+														return knex("registrations").insert([
+															{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Database for Developers").subject_uuid}					
+														]).returning("person_uuid");
+													}).then(([person_uuid]) => {
+														return knex("roles").select().then(roles => {
+															return knex("users").insert([
+																{ username: "jack0183", password: hashedPassword, email: "jack0183@stud.kea.dk", role_uuid: roles.find(role => role.role === "STUDENT").role_uuid, person_uuid: person_uuid }
+															]);
+														});
+													});
+											});
 										});
 								});
 						});

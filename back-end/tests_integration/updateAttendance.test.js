@@ -33,7 +33,7 @@ test("Test updateAttendance correct student", async () => {
 });
 
 test("Test updateAttendance incorrect student", async () => {
-	const student = [{person_uuid: "dd4220a4-38bd-4543-8757-79b3d4f749a3"}];
+	const student = [{person_uuid: "94d39594-e212-4057-8239-f82d007a4f6e"}];
 	const code = await Code.query().select().where({});
 
 	const expected = {

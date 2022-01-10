@@ -48,41 +48,41 @@ export async function seed(knex) {
 											return knex("subjects").insert([
 												{ subject_name: "Test-subject1", subject_description: "Test-description", program_uuid: program_uuid },
 												{ subject_name: "Test-subject2", subject_description: "Test-description", program_uuid: program_uuid }
-											])
+											]);
 										}).then(function () {
 											return knex("subjects").select().then(subjects => {
 												return knex("people").insert([
 													{ person_first_name: "Test-people-firstname-student", person_last_name: "Test-people-lastname-student", person_phone_number: "Test-people-phonenumber-student", department_uuid: department_uuid }
 												]).returning("person_uuid")
 													.then(([person_uuid]) => {
-															return knex("registrations").insert([
-																{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid},
-																{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid}
-															]).returning("person_uuid")
-														}).then(([person_uuid]) => {
+														return knex("registrations").insert([
+															{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid},
+															{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid}
+														]).returning("person_uuid");
+													}).then(([person_uuid]) => {
 														return knex("roles").select().then(roles => {
 															return knex("users").insert([
 																{ username: "Test-user-student", password: hashedPassword, email: "testUserStudent@test.dk", role_uuid: roles.find(role => role.role === "STUDENT").role_uuid, person_uuid: person_uuid }
 															]);
-														})
-													})
-											})
+														});
+													});
+											});
 										}).then(function () {
 											return knex("subjects").select().then(subjects => {
 												return knex("people").insert([
 													{ person_first_name: "Test-people-firstname-teacher", person_last_name: "Test-people-lastname-teacher", person_phone_number: "Test-people-phonenumber-teacher", department_uuid: department_uuid }
 												]).returning("person_uuid")
-												.then(([person_uuid]) => {
-													return knex("registrations").insert([
-														{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid},
-														{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid}
-													]).returning("person_uuid")
-												}).then(([person_uuid]) => {
+													.then(([person_uuid]) => {
+														return knex("registrations").insert([
+															{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject1").subject_uuid},
+															{ person_uuid: person_uuid, subject_uuid: subjects.find(subject => subject.subject_name === "Test-subject2").subject_uuid}
+														]).returning("person_uuid");
+													}).then(([person_uuid]) => {
 														return knex("roles").select().then(roles => {
 															return knex("users").insert([
 																{ username: "Test-user-teacher", password: hashedPassword2, email: "testUserTeacher@test.dk", role_uuid: roles.find(role => role.role === "TEACHER").role_uuid, person_uuid: person_uuid }
 															]);
-														})
+														});
 
 													});
 											});
